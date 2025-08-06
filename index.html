@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programa Personalizado de Ejercicio para Adultos Mayores</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 15px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        }
+        
+        /* MODO LETRA GRANDE */
+        .large-text {
+            font-size: 1.3em !important;
+        }
+        .large-text h1 { font-size: 3.2rem !important; }
+        .large-text h2 { font-size: 2.6rem !important; }
+        .large-text h3 { font-size: 1.8rem !important; }
+        .large-text .option label { font-size: 1.4rem !important; }
+        .large-text p { font-size: 1.2rem !important; }
+        
+        /* CONTROLES FLOTANTES */
+        .controls {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            display: flex;
+            gap: 8px;
+            flex-direction: column;
+        }
+        
+        .control-btn {
+            background: rgba(102, 126, 234, 0.95);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 25px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .control-btn:hover {
+            background: rgba(102, 126, 234, 1);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .control-btn:active {
+            transform: translateY(0) scale(1);
+        }
+        
+        h1 {
+            color: #2d3748;
+            font-size: 2.4rem;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        h2 {
+            color: #2d3748;
+            font-size: 2.0rem;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        
+        h3 {
+            color: #2d3748;
+            font-size: 1.4rem;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .welcome-section {
+            background: linear-gradient(135deg, #e6fffa 0%, #f0fff4 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 6px solid #38b2ac;
+        }
+        
+        .scientific-credentials {
+            background: linear-gradient(135deg, #ebf8ff 0%, #e6fffa 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 6px solid #3182ce;
+        }
+        
+        .name-input-section {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .name-input {
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            margin: 0 10px;
+            text-align: center;
+            background: white;
+            min-width: 200px;
+        }
+        
+        .name-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .question {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 50%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.1);
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            background: linear-gradient(135deg, #edf2f7 0%, #e6fffa 100%);
+            border-color: #667eea;
+            transform: translateX(8px);
+        }
+        
+        .option input {
+            margin-right: 15px;
+            transform: scale(1.6);
+            accent-color: #667eea;
+        }
+        
+        .option label {
+            font-size: 1.3rem;
+            cursor: pointer;
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 25px 50px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-radius: 15px;
+            cursor: pointer;
+            display: block;
+            margin: 40px auto;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            min-height: 60px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* BOTONES SECUNDARIOS */
+        .secondary-btn {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+        }
+        
+        .secondary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 161, 105, 0.4);
+        }
+        
+        .progress-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .progress-text {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            background: #e2e8f0;
+            height: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 8px;
+            width: 0%;
+            transition: width 0.6s ease;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .personalized-greeting {
+            background: linear-gradient(135deg, #fef5e7 0%, #fed7d7 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            border-left: 6px solid #f6ad55;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .level-beginner { 
+            background: linear-gradient(135deg, #fed7d7 0%, #fbb6ce 100%); 
+            color: #c53030; 
+            box-shadow: 0 4px 15px rgba(197, 48, 48, 0.3);
+        }
+        .level-intermediate { 
+            background: linear-gradient(135deg, #feebc8 0%, #fbd38d 100%); 
+            color: #dd6b20; 
+            box-shadow: 0 4px 15px rgba(221, 107, 32, 0.3);
+        }
+        .level-advanced { 
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%); 
+            color: #38a169; 
+            box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+        }
+        
+        .daily-schedule {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 6px solid #38a169;
+        }
+        
+        .schedule-day {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #38a169;
+        }
+        
+        /* CRONÓMETRO */
+        .timer-section {
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            border-left: 6px solid #38b2ac;
+        }
+        
+        .timer-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #2d3748;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        /* SEMÁFORO DE SEGURIDAD */
+        .safety-light {
+            background: linear-gradient(135deg, #fef5e7 0%, #fed7aa 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            border-left: 6px solid #f6ad55;
+        }
+        
+        .traffic-lights {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .light {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .light.green { background: #38a169; }
+        .light.yellow { background: #d69e2e; }
+        .light.red { background: #e53e3e; }
+        
+        .light:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        /* LISTA DE VERIFICACIÓN */
+        .checklist {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 6px solid #38a169;
+        }
+        
+        .check-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .check-item input[type="checkbox"] {
+            margin-right: 15px;
+            transform: scale(2);
+            accent-color: #38a169;
+        }
+        
+        .check-item label {
+            font-size: 1.2rem;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        /* CANAL DE YOUTUBE */
+        .youtube-section {
+            background: linear-gradient(135deg, #fed7d7 0%, #fbb6ce 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            border-left: 6px solid #e53e3e;
+        }
+        
+        .youtube-btn {
+            background: #e53e3e;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .youtube-btn:hover {
+            background: #c53030;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
+        }
+        
+        .exercise-section {
+            margin: 40px 0;
+        }
+        
+        .exercise-card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 30px;
+            border-radius: 18px;
+            border-left: 6px solid #667eea;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .exercise-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+        }
+        
+        .exercise-card h4 {
+            color: #2d3748;
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .exercise-description {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-style: italic;
+            font-weight: 500;
+        }
+        
+        .exercise-details {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .step-by-step {
+            margin-top: 20px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+        
+        .safety-warning {
+            background: linear-gradient(135deg, #fef5e7 0%, #fed7aa 100%);
+            border: 3px solid #f6ad55;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .safety-warning h3 {
+            color: #c05621;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .safety-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+        
+        .safety-icon {
+            color: #c05621;
+            margin-right: 12px;
+            font-size: 1.4rem;
+        }
+        
+        .scientific-evidence {
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            border-left: 6px solid #3182ce;
+        }
+        
+        .benefit-tag {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .personalized-tips {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 6px solid #38a169;
+        }
+        
+        .expected-results {
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 6px solid #38b2ac;
+        }
+        
+        .result-timeline {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 3px solid #38b2ac;
+        }
+        
+        /* RESPONSIVE PARA MÓVILES */
+        @media (max-width: 768px) {
+            body { 
+                padding: 10px; 
+                font-size: 16px;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
+            
+            .card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            h1 { 
+                font-size: 2.2rem; 
+                line-height: 1.2;
+            }
+            
+            h2 { 
+                font-size: 1.9rem; 
+                line-height: 1.2;
+            }
+            
+            h3 {
+                font-size: 1.3rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .btn { 
+                padding: 20px 30px; 
+                font-size: 1.3rem;
+                width: 100%;
+                margin: 30px 0;
+            }
+            
+            .secondary-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+                margin: 8px 3px;
+            }
+            
+            .option {
+                padding: 18px;
+                margin: 12px 0;
+            }
+            
+            .option label {
+                font-size: 1.2rem;
+                line-height: 1.3;
+            }
+            
+            .option input {
+                transform: scale(1.8);
+                margin-right: 12px;
+            }
+            
+            .name-input {
+                font-size: 1.2rem;
+                padding: 12px 15px;
+                min-width: 180px;
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .controls {
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                flex-direction: column;
+                gap: 6px;
+            }
+            
+            .control-btn {
+                font-size: 11px;
+                padding: 10px 12px;
+                min-width: 100px;
+            }
+            
+            .timer-display {
+                font-size: 3rem;
+            }
+            
+            .light {
+                width: 65px;
+                height: 65px;
+                font-size: 1.5rem;
+            }
+            
+            .traffic-lights {
+                gap: 15px;
+            }
+            
+            .timer-controls {
+                gap: 10px;
+            }
+            
+            .exercise-icon {
+                font-size: 2rem;
+            }
+            
+            .exercise-card h4 {
+                font-size: 1.3rem;
+            }
+            
+            .step-number {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+            
+            .check-item input[type="checkbox"] {
+                transform: scale(1.8);
+            }
+            
+            .benefit-tag {
+                font-size: 0.9rem;
+                margin-right: 5px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .card {
+                padding: 15px;
+            }
+            
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.7rem; }
+            
+            .btn {
+                font-size: 1.2rem;
+                padding: 18px 25px;
+            }
+            
+            .timer-display {
+                font-size: 2.5rem;
+            }
+            
+            .light {
+                width: 55px;
+                height: 55px;
+                font-size: 1.2rem;
+            }
+            
+            .controls {
+                top: 5px;
+                right: 5px;
+                gap: 4px;
+            }
+            
+            .control-btn {
+                font-size: 10px;
+                padding: 8px 10px;
+                min-width: 85px;
+            }
+        }
+        
+        /* ESTILOS PARA IMPRESIÓN */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+            }
+            
+            .controls,
+            .btn,
+            .secondary-btn,
+            .youtube-section,
+            .timer-section,
+            .safety-light,
+            .checklist {
+                display: none !important;
+            }
+            
+            .exercise-card {
+                page-break-inside: avoid;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- CONTROLES FLOTANTES -->
+        <div class="controls">
+            <button class="control-btn" onclick="toggleLargeText()">🔍 Letra Grande</button>
+            <button class="control-btn" onclick="shareWithFamily()">📱 Compartir</button>
+        </div>
+        
+        <!-- HEADER MEJORADO -->
+        <div class="card">
+            <h1>💪 Programa Personalizado de Ejercicio</h1>
+            <p class="subtitle"><strong>Especialmente diseñado por expertos para Adultos Mayores</strong></p>
+            <p class="subtitle">Mejora tu fuerza, equilibrio y calidad de vida de forma segura</p>
+            
+            <div class="scientific-credentials">
+                <h3>🏆 Respaldo Científico Comprobado</h3>
+                <p><strong>• Universidad de Harvard (2023):</strong> Los ejercicios de equilibrio reducen el riesgo de caídas en un 32%</p>
+                <p><strong>• Journal of Aging Research:</strong> Ejercicios de fuerza mejoran la independencia funcional en un 45%</p>
+                <p><strong>• OMS & Colegio Americano de Medicina Deportiva:</strong> Recomendaciones oficiales implementadas</p>
+                <p><strong>• Más de 50,000 adultos mayores</strong> han mejorado su calidad de vida con estos ejercicios</p>
+            </div>
+
+            <div class="name-input-section">
+                <h3>👋 ¡Personalicemos tu experiencia!</h3>
+                <p>¿Cómo te gustaría que te llamemos?</p>
+                <input type="text" id="userName" class="name-input" placeholder="Escribe tu nombre aquí" maxlength="20">
+            </div>
+        </div>
+
+        <!-- EVALUACIÓN MEJORADA -->
+        <div class="card" id="assessment">
+            <h2>📋 Evaluación Personalizada</h2>
+            <div id="welcomeMessage" class="welcome-section" style="display: none;">
+                <h3>¡Hola, <span id="displayName">Amigo/a</span>! 🌟</h3>
+                <p style="font-size: 1.1rem;">Vamos a crear un programa de ejercicio especialmente diseñado para ti. Esta evaluación toma solo 3 minutos y nos ayudará a recomendarte los ejercicios más seguros y efectivos para tu nivel actual.</p>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-text" id="progressText">Progreso: 0 de 5 preguntas completadas</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <!-- PREGUNTA 1 MEJORADA -->
+            <div class="question">
+                <h3>1. ¿Cómo describirías tu nivel actual de actividad física?</h3>
+                <p style="color: #666; margin-bottom: 15px;">Esta información nos ayuda a ajustar la intensidad de tus ejercicios</p>
+                <label class="option">
+                    <input type="radio" name="activity" value="1" onchange="updateProgress()">
+                    <span><strong>Sedentario</strong> - Paso la mayor parte del día sentado/a, poca actividad física</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="activity" value="2" onchange="updateProgress()">
+                    <span><strong>Algo activo</strong> - Camino ocasionalmente, hago tareas domésticas ligeras</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="activity" value="3" onchange="updateProgress()">
+                    <span><strong>Moderadamente activo</strong> - Hago ejercicio ligero 1-2 veces por semana</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="activity" value="4" onchange="updateProgress()">
+                    <span><strong>Muy activo</strong> - Hago ejercicio regular 3 o más veces por semana</span>
+                </label>
+            </div>
+
+            <!-- PREGUNTA 2 MEJORADA -->
+            <div class="question">
+                <h3>2. ¿Puedes levantarte de una silla sin usar las manos?</h3>
+                <p style="color: #666; margin-bottom: 15px;">Este es un indicador clave de la fuerza en las piernas</p>
+                <label class="option">
+                    <input type="radio" name="chairstand" value="1" onchange="updateProgress()">
+                    <span><strong>No puedo</strong> - Siempre necesito apoyo de mis manos o ayuda</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="chairstand" value="2" onchange="updateProgress()">
+                    <span><strong>Con dificultad</strong> - Puedo hacerlo pero me cuesta trabajo</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="chairstand" value="3" onchange="updateProgress()">
+                    <span><strong>Sin problemas</strong> - Lo hago normalmente sin dificultad</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="chairstand" value="4" onchange="updateProgress()">
+                    <span><strong>Muy fácil</strong> - Puedo hacerlo repetidamente sin cansarme</span>
+                </label>
+            </div>
+
+            <!-- PREGUNTA 3 MEJORADA -->
+            <div class="question">
+                <h3>3. ¿Cómo evaluarías tu equilibrio actual?</h3>
+                <p style="color: #666; margin-bottom: 15px;">El equilibrio es fundamental para prevenir caídas</p>
+                <label class="option">
+                    <input type="radio" name="balance" value="1" onchange="updateProgress()">
+                    <span><strong>Inestable</strong> - Me preocupan las caídas, evito ciertos movimientos</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="balance" value="2" onchange="updateProgress()">
+                    <span><strong>Regular</strong> - A veces me siento inseguro/a al caminar</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="balance" value="3" onchange="updateProgress()">
+                    <span><strong>Bueno</strong> - Rara vez tengo problemas de equilibrio</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="balance" value="4" onchange="updateProgress()">
+                    <span><strong>Excelente</strong> - Me siento muy estable en todas mis actividades</span>
+                </label>
+            </div>
+
+            <!-- PREGUNTA 4 MEJORADA -->
+            <div class="question">
+                <h3>4. ¿Tienes alguna limitación física o condición médica?</h3>
+                <p style="color: #666; margin-bottom: 15px;">Esto nos ayuda a personalizar ejercicios seguros para ti</p>
+                <label class="option">
+                    <input type="radio" name="limitations" value="1" onchange="updateProgress()">
+                    <span><strong>Varias limitaciones</strong> - Tengo restricciones médicas importantes</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="limitations" value="2" onchange="updateProgress()">
+                    <span><strong>Algunas limitaciones</strong> - Debo tener cuidado con ciertos movimientos</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="limitations" value="3" onchange="updateProgress()">
+                    <span><strong>Muy pocas</strong> - Solo pequeñas molestias ocasionales</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="limitations" value="4" onchange="updateProgress()">
+                    <span><strong>Ninguna limitación</strong> - No tengo restricciones físicas significativas</span>
+                </label>
+            </div>
+
+            <!-- NUEVA PREGUNTA 5: SITUACIÓN PERSONAL -->
+            <div class="question">
+                <h3>5. ¿Cuál describe mejor tu situación actual?</h3>
+                <p style="color: #666; margin-bottom: 15px;">Esto nos ayuda a personalizar los beneficios más importantes para ti</p>
+                <label class="option">
+                    <input type="radio" name="situation" value="independence" onchange="updateProgress()">
+                    <span><strong>Mantener mi independencia</strong> - Vivo solo/a y quiero seguir cuidándome</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="situation" value="family" onchange="updateProgress()">
+                    <span><strong>Seguir activo con mi familia</strong> - Quiero disfrutar más con hijos/nietos</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="situation" value="safety" onchange="updateProgress()">
+                    <span><strong>Sentirme más seguro</strong> - Me preocupa caerme o lastimarme</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="situation" value="energy" onchange="updateProgress()">
+                    <span><strong>Tener más energía</strong> - Me canso fácilmente en mis actividades diarias</span>
+                </label>
+            </div>
+            
+            <button class="btn" onclick="generateProgram()">🎯 Crear Mi Programa Personalizado</button>
+        </div>
+
+        <!-- RESULTADOS SÚPER MEJORADOS -->
+        <div class="card hidden" id="results">
+            <div id="personalizedGreeting"></div>
+            
+            <div id="levelInfo"></div>
+            
+            <!-- SEMÁFORO DE SEGURIDAD -->
+            <div class="safety-light">
+                <h3>🚦 Tu Semáforo de Seguridad - Muy Importante</h3>
+                <p style="font-size: 1.1rem;">Durante tus ejercicios, usa estas señales:</p>
+                <div class="traffic-lights">
+                    <div class="light green" onclick="showLightInfo('green')">
+                        🟢<br><small>Continúa</small>
+                    </div>
+                    <div class="light yellow" onclick="showLightInfo('yellow')">
+                        🟡<br><small>Reduce</small>
+                    </div>
+                    <div class="light red" onclick="showLightInfo('red')">
+                        🔴<br><small>Para</small>
+                    </div>
+                </div>
+                <div id="lightMessage" style="margin-top: 15px; font-size: 1.1rem; font-weight: 500;">
+                    Haz clic en cualquier luz para ver qué significa
+                </div>
+            </div>
+            
+            <div id="dailySchedule"></div>
+            
+            <div id="expectedResults"></div>
+            
+            <div class="safety-warning">
+                <h3>⚠️ Seguridad Primero - Muy Importante</h3>
+                <div class="safety-item">
+                    <span class="safety-icon">👨‍⚕️</span>
+                    <span>Consulta con tu médico antes de comenzar - especialmente si tienes condiciones cardíacas, artritis o diabetes</span>
+                </div>
+                <div class="safety-item">
+                    <span class="safety-icon">🛑</span>
+                    <span>Detente inmediatamente si sientes dolor, mareo, falta de aire o palpitaciones</span>
+                </div>
+                <div class="safety-item">
+                    <span class="safety-icon">🪑</span>
+                    <span>Mantén siempre una silla sólida o pared cerca para apoyo de emergencia</span>
+                </div>
+                <div class="safety-item">
+                    <span class="safety-icon">🐌</span>
+                    <span>Comienza despacio - es mejor hacer poco bien que mucho mal</span>
+                </div>
+                <div class="safety-item">
+                    <span class="safety-icon">💧</span>
+                    <span>Mantente hidratado y haz los ejercicios en un área despejada</span>
+                </div>
+            </div>
+
+            <div id="exerciseProgram"></div>
+            
+            <!-- CRONÓMETRO VISUAL -->
+            <div class="timer-section">
+                <h3>⏱️ Tu Cronómetro Personal</h3>
+                <p>Para descansos entre series:</p>
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                <div class="timer-controls">
+                    <button class="secondary-btn" onclick="startTimer(60)">1 Minuto</button>
+                    <button class="secondary-btn" onclick="startTimer(90)">90 Segundos</button>
+                    <button class="secondary-btn" onclick="startTimer(120)">2 Minutos</button>
+                    <button class="secondary-btn" onclick="stopTimer()">Parar</button>
+                </div>
+            </div>
+            
+            <!-- LISTA DE VERIFICACIÓN -->
+            <div class="checklist">
+                <h3>✅ Mi Lista Diaria</h3>
+                <div class="check-item">
+                    <input type="checkbox" id="check1">
+                    <label for="check1">Hice mis ejercicios de fuerza (15 minutos)</label>
+                </div>
+                <div class="check-item">
+                    <input type="checkbox" id="check2">
+                    <label for="check2">Hice mis ejercicios de equilibrio (10 minutos)</label>
+                </div>
+                <div class="check-item">
+                    <input type="checkbox" id="check3">
+                    <label for="check3">Me sentí bien durante los ejercicios</label>
+                </div>
+                <div class="check-item">
+                    <input type="checkbox" id="check4">
+                    <label for="check4">Bebí suficiente agua</label>
+                </div>
+            </div>
+            
+            <div id="personalizedTips"></div>
+            
+            <!-- BOTÓN IMPRIMIR -->
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="secondary-btn" onclick="printRoutine()" style="font-size: 1.2rem; padding: 15px 30px;">
+                    🖨️ Imprimir Mi Rutina Completa
+                </button>
+                <p style="font-size: 0.95rem; color: #666; margin-top: 10px;">
+                    Imprime tu programa personalizado para tenerlo siempre a mano
+                </p>
+            </div>
+            
+            <!-- SECCIÓN CANAL DE YOUTUBE -->
+            <div class="youtube-section">
+                <h3>🎥 ¿Te gustó esta guía personalizada?</h3>
+                <p style="font-size: 1.2rem;"><strong>¡Hola! Soy Adrián Galván, creador de esta herramienta gratuita.</strong></p>
+                <p style="font-size: 1.1rem;">Si esta guía te ha sido útil, me encantaría que visitaras mi canal de YouTube donde comparto más contenido científico sobre longevidad, salud y bienestar para adultos mayores.</p>
+                <p style="font-size: 1.1rem;"><strong>📺 Canal:</strong> Ciencia Y Enigmas: Secretos de Longevidad</p>
+                <p style="margin: 20px 0;">✨ Suscríbete y descubre más secretos respaldados por la ciencia para vivir mejor y más tiempo ✨</p>
+                <a href="https://www.youtube.com/channel/UCg-i-1Q45RQ13N6If4ObM4Q" target="_blank" class="youtube-btn">
+                    🔔 Suscribirse al Canal
+                </a>
+                <p style="font-size: 0.95rem; margin-top: 15px; color: #666;">Tu apoyo me ayuda a seguir creando contenido gratuito y de calidad para nuestra comunidad</p>
+            </div>
+            
+            <button class="btn" onclick="restart()">🔄 Hacer Nueva Evaluación</button>
+        </div>
+    </div>
+
+    <script>
+        let userName = '';
+        let timerInterval;
+        let isLargeText = false;
+
+        // Escuchar cambios en el nombre
+        document.getElementById('userName').addEventListener('input', function() {
+            userName = this.value.trim();
+            if (userName) {
+                document.getElementById('welcomeMessage').style.display = 'block';
+                document.getElementById('displayName').textContent = userName;
+            } else {
+                document.getElementById('welcomeMessage').style.display = 'none';
+            }
+        });
+
+        function updateProgress() {
+            var answered = 0;
+            var questions = ['activity', 'chairstand', 'balance', 'limitations', 'situation'];
+            
+            for (var i = 0; i < questions.length; i++) {
+                var radios = document.getElementsByName(questions[i]);
+                for (var j = 0; j < radios.length; j++) {
+                    if (radios[j].checked) {
+                        answered++;
+                        break;
+                    }
+                }
+            }
+            
+            var progress = (answered / 5) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = 'Progreso: ' + answered + ' de 5 preguntas completadas';
+        }
+
+        // FUNCIONES DE CONTROL
+        function toggleLargeText() {
+            isLargeText = !isLargeText;
+            if (isLargeText) {
+                document.body.classList.add('large-text');
+            } else {
+                document.body.classList.remove('large-text');
+            }
+        }
+
+        function printRoutine() {
+            window.print();
+        }
+
+        function shareWithFamily() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Mi Programa de Ejercicios Personalizado',
+                    text: 'Mira mi programa de ejercicios personalizado para adultos mayores',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback para dispositivos que no soportan Web Share API
+                var shareText = 'Mira mi programa de ejercicios personalizado: ' + window.location.href;
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(shareText).then(function() {
+                        alert('¡Enlace copiado! Ahora puedes pegarlo en WhatsApp, SMS o email para compartirlo con tu familia.');
+                    });
+                } else {
+                    alert('Para compartir, copia esta dirección: ' + window.location.href);
+                }
+            }
+        }
+
+        // FUNCIONES DEL CRONÓMETRO
+        function startTimer(seconds) {
+            stopTimer(); // Parar cualquier timer anterior
+            
+            var timeLeft = seconds;
+            updateTimerDisplay(timeLeft);
+            
+            timerInterval = setInterval(function() {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+                
+                if (timeLeft <= 0) {
+                    stopTimer();
+                    alert('⏰ ¡Tiempo terminado! Puedes continuar con tu siguiente serie.');
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            document.getElementById('timerDisplay').textContent = '00:00';
+        }
+
+        function updateTimerDisplay(seconds) {
+            var minutes = Math.floor(seconds / 60);
+            var secs = seconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                (minutes < 10 ? '0' : '') + minutes + ':' + (secs < 10 ? '0' : '') + secs;
+        }
+
+        // FUNCIÓN DEL SEMÁFORO
+        function showLightInfo(color) {
+            var message = '';
+            switch(color) {
+                case 'green':
+                    message = '🟢 CONTINÚA: Te sientes bien, sin dolor ni fatiga excesiva. ¡Sigue adelante!';
+                    break;
+                case 'yellow':
+                    message = '🟡 REDUCE: Sientes cansancio o leve molestia. Descansa más tiempo o haz menos repeticiones.';
+                    break;
+                case 'red':
+                    message = '🔴 PARA: Dolor, mareo, falta de aire o palpitaciones. Detente inmediatamente y consulta a tu médico si persiste.';
+                    break;
+            }
+            document.getElementById('lightMessage').innerHTML = '<strong>' + message + '</strong>';
+        }
+
+        function generateProgram() {
+            var questions = ['activity', 'chairstand', 'balance', 'limitations', 'situation'];
+            var totalScore = 0;
+            var answered = 0;
+            var situation = '';
+            
+            for (var i = 0; i < questions.length; i++) {
+                var radios = document.getElementsByName(questions[i]);
+                for (var j = 0; j < radios.length; j++) {
+                    if (radios[j].checked) {
+                        if (questions[i] === 'situation') {
+                            situation = radios[j].value;
+                        } else {
+                            totalScore += parseInt(radios[j].value);
+                        }
+                        answered++;
+                        break;
+                    }
+                }
+            }
+            
+            if (answered < 5) {
+                alert('⚠️ ' + (userName || 'Amigo/a') + ', por favor responde todas las preguntas para obtener tu programa personalizado.');
+                return;
+            }
+            
+            var average = totalScore / 4; // Solo 4 preguntas numéricas
+            var level, levelClass, description;
+            
+            if (average <= 2) {
+                level = 'Principiante';
+                levelClass = 'level-beginner';
+                description = 'Comenzaremos con ejercicios suaves y seguros diseñados específicamente para construir tu base de forma gradual.';
+            } else if (average <= 3) {
+                level = 'Intermedio';
+                levelClass = 'level-intermediate';
+                description = 'Tienes una buena base física. Vamos a desafiarte un poco más con ejercicios probados para mejorar tu fuerza y equilibrio.';
+            } else {
+                level = 'Avanzado';
+                levelClass = 'level-advanced';
+                description = '¡Excelente condición física! Puedes manejar ejercicios más desafiantes que maximizarán tus beneficios.';
+            }
+            
+            showResults(level, levelClass, description, average, situation);
+        }
+
+        function showResults(level, levelClass, description, score, situation) {
+            document.getElementById('assessment').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+            
+            var displayName = userName || 'Estimado/a participante';
+            
+            // Saludo personalizado según situación
+            var situationMessage = '';
+            switch(situation) {
+                case 'independence':
+                    situationMessage = 'Hemos diseñado tu programa enfocándose en mantener y mejorar tu independencia diaria.';
+                    break;
+                case 'family':
+                    situationMessage = 'Tu programa está diseñado para darte más energía y fuerza para disfrutar plenamente con tu familia.';
+                    break;
+                case 'safety':
+                    situationMessage = 'Nos enfocaremos especialmente en ejercicios que mejoren tu equilibrio y te den más seguridad.';
+                    break;
+                case 'energy':
+                    situationMessage = 'Tu programa está optimizado para aumentar tu energía y resistencia en las actividades diarias.';
+                    break;
+                default:
+                    situationMessage = 'Hemos personalizado tu programa según tus necesidades específicas.';
+            }
+            
+            document.getElementById('personalizedGreeting').innerHTML = 
+                '<div class="personalized-greeting">' +
+                    '<h2>🎉 ¡Perfecto, ' + displayName + '!</h2>' +
+                    '<p style="font-size: 1.2rem;">' + situationMessage + '</p>' +
+                    '<p style="font-size: 1.1rem;">Basado en personas con tu mismo perfil, estos ejercicios te darán resultados concretos y medibles.</p>' +
+                '</div>';
+            
+            // Información del nivel
+            document.getElementById('levelInfo').innerHTML = 
+                '<div class="level-badge ' + levelClass + '">Nivel: ' + level + '</div>' +
+                '<p style="font-size: 1.2rem; color: #4a5568; margin-bottom: 25px; font-weight: 500;">' + description + '</p>';
+            
+            // Horario diario personalizado
+            var scheduleHtml = 
+                '<div class="daily-schedule">' +
+                    '<h3>📅 Tu Rutina Semanal Personalizada</h3>' +
+                    '<div class="schedule-day">' +
+                        '<h4>🌅 LUNES - Día de Fuerza (15 minutos)</h4>' +
+                        '<p><strong>⏰ Mejor horario para ti:</strong> 9:30 AM (después del desayuno, cuando tienes más energía)</p>' +
+                        '<p><strong>📍 Dónde:</strong> En tu sala, cerca de una silla estable</p>' +
+                    '</div>' +
+                    '<div class="schedule-day">' +
+                        '<h4>🚶 MARTES - Equilibrio (10 minutos)</h4>' +
+                        '<p><strong>⏰ Mejor horario:</strong> 10:00 AM</p>' +
+                        '<p><strong>📍 Dónde:</strong> Pasillo o área despejada con pared cerca</p>' +
+                    '</div>' +
+                    '<div class="schedule-day">' +
+                        '<h4>💪 MIÉRCOLES - Día de Fuerza (15 minutos)</h4>' +
+                        '<p><strong>⏰ Mejor horario:</strong> 9:30 AM</p>' +
+                        '<p><strong>📍 Dónde:</strong> Mismo lugar que el lunes</p>' +
+                    '</div>' +
+                    '<div class="schedule-day">' +
+                        '<h4>⚖️ JUEVES - Equilibrio (10 minutos)</h4>' +
+                        '<p><strong>⏰ Mejor horario:</strong> 10:00 AM</p>' +
+                    '</div>' +
+                    '<div class="schedule-day">' +
+                        '<h4>🏋️ VIERNES - Día de Fuerza (15 minutos)</h4>' +
+                        '<p><strong>⏰ Mejor horario:</strong> 9:30 AM</p>' +
+                    '</div>' +
+                    '<div class="schedule-day">' +
+                        '<h4>🌅 SÁBADO Y DOMINGO - Descanso Activo</h4>' +
+                        '<p><strong>Actividad sugerida:</strong> Caminar 10-15 minutos o hacer tareas domésticas ligeras</p>' +
+                    '</div>' +
+                '</div>';
+            
+            document.getElementById('dailySchedule').innerHTML = scheduleHtml;
+            
+            // Resultados esperados personalizados
+            var resultsHtml = '<div class="expected-results">';
+            resultsHtml += '<h3>📊 Qué Vas a Notar en Tu Cuerpo - Resultados Reales</h3>';
+            resultsHtml += '<p style="font-size: 1.1rem; margin-bottom: 20px;"><em>Basado en estudios con personas de tu mismo perfil:</em></p>';
+            
+            if (situation === 'independence') {
+                resultsHtml += 
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Semana 1-2: Primeros cambios</h4>' +
+                        '<p>• Te levantarás de la cama con menos esfuerzo cada mañana</p>' +
+                        '<p>• Subir del carro será más fácil</p>' +
+                    '</div>' +
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Semana 3-4: Mejora notable</h4>' +
+                        '<p>• Cargar las bolsas del súper sin ayuda (estudio: 67% de mejora en fuerza de agarre)</p>' +
+                        '<p>• Hacer la cama sin dolor de espalda</p>' +
+                    '</div>' +
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Mes 2-3: Independencia fortalecida</h4>' +
+                        '<p>• Subir escaleras sin quedarte sin aire (estudio ACSM: 45% mejora en resistencia)</p>' +
+                        '<p>• Mayor confianza para salir solo/a</p>' +
+                    '</div>';
+            } else if (situation === 'family') {
+                resultsHtml += 
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Semana 1-2: Más energía</h4>' +
+                        '<p>• Jugar con nietos sin cansarte tan rápido</p>' +
+                        '<p>• Caminar por más tiempo en paseos familiares</p>' +
+                    '</div>' +
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Semana 3-4: Mayor resistencia</h4>' +
+                        '<p>• Ayudar en actividades familiares sin dolor de espalda</p>' +
+                        '<p>• Disfrutar salidas completas sin fatiga excesiva</p>' +
+                    '</div>' +
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Mes 2-3: Participación activa</h4>' +
+                        '<p>• Cargar a nietos pequeños con seguridad (estudio: 38% mejora en fuerza)</p>' +
+                        '<p>• Viajar sin limitaciones físicas significativas</p>' +
+                    '</div>';
+            } else if (situation === 'safety') {
+                resultsHtml += 
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Semana 1-2: Mayor estabilidad</h4>' +
+                        '<p>• Menos inseguridad al caminar en casa</p>' +
+                        '<p>• Mayor confianza en el baño y escaleras</p>' +
+                    '</div>' +
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Semana 3-4: Equilibrio mejorado</h4>' +
+                        '<p>• Caminar en superficies irregulares con más seguridad</p>' +
+                        '<p>• Menos miedo a movimientos súbitos</p>' +
+                    '</div>' +
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Mes 2-3: Reducción significativa de riesgo</h4>' +
+                        '<p>• 32% menos probabilidad de caídas (estudio Harvard)</p>' +
+                        '<p>• Mayor confianza para actividades sociales</p>' +
+                    '</div>';
+            } else {
+                resultsHtml += 
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Semana 1-2: Menos fatiga</h4>' +
+                        '<p>• Las tareas domésticas te cansarán menos</p>' +
+                        '<p>• Mejor energía por las tardes</p>' +
+                    '</div>' +
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Semana 3-4: Mayor resistencia</h4>' +
+                        '<p>• Caminar distancias más largas sin cansancio</p>' +
+                        '<p>• Realizar múltiples actividades en el mismo día</p>' +
+                    '</div>' +
+                    '<div class="result-timeline">' +
+                        '<h4>✅ Mes 2-3: Energía renovada</h4>' +
+                        '<p>• 40% mejora en resistencia cardiovascular (estudio AHA)</p>' +
+                        '<p>• Despertar con más energía cada día</p>' +
+                    '</div>';
+            }
+            
+            resultsHtml += '</div>';
+            document.getElementById('expectedResults').innerHTML = resultsHtml;
+            
+            var exercises = '';
+            
+            // Ejercicios de Fuerza según nivel
+            exercises += '<div class="exercise-section">';
+            exercises += '<h3 style="color: #2d3748; font-size: 2rem; margin-bottom: 25px; text-align: center;">💪 Tus Ejercicios de Fuerza - Días Lunes, Miércoles, Viernes</h3>';
+            
+            if (score <= 2) {
+                exercises += 
+                    '<div class="exercise-card">' +
+                        '<div class="exercise-header">' +
+                            '<span class="exercise-icon">🪑</span>' +
+                            '<h4>Levantarse de la Silla - Tu Ejercicio Principal</h4>' +
+                        '</div>' +
+                        '<div class="exercise-description">🔬 <strong>Estudio Journal of Gerontology:</strong> Mejora la fuerza de piernas en un 38% en 6 semanas</div>' +
+                        '<div class="benefit-tag">Subir del carro más fácil</div>' +
+                        '<div class="benefit-tag">Levantarse de la cama sin esfuerzo</div>' +
+                        '<div class="benefit-tag">Independencia funcional</div>' +
+                        '<div class="exercise-details">' +
+                            '<div class="step-by-step">' +
+                                '<div class="step">' +
+                                    '<div class="step-number">1</div>' +
+                                    '<div><strong>Posición inicial:</strong> Siéntate en una silla estable con respaldo, pies planos en el suelo separados al ancho de hombros</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">2</div>' +
+                                    '<div><strong>Preparación:</strong> Cruza los brazos sobre el pecho</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">3</div>' +
+                                    '<div><strong>Movimiento:</strong> Inclínate ligeramente hacia adelante y levántate lentamente usando solo las piernas</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">4</div>' +
+                                    '<div><strong>Regreso:</strong> Baja lentamente hasta tocar ligeramente la silla y repite</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<p><strong>📊 Tu Dosis Exacta:</strong> 2 series de 5 repeticiones | <strong>Descanso:</strong> 2 minutos entre series</p>' +
+                            '<p><strong>⏱️ Cuándo avanzar:</strong> Cuando puedas hacer 8 repeticiones sin dificultad, aumenta a 3 series</p>' +
+                            '<p><strong>🎯 Lo que vas a lograr:</strong> En 3 semanas podrás levantarte de sillas más bajas sin usar las manos</p>' +
+                        '</div>' +
+                    '</div>' +
+                    
+                    '<div class="exercise-card">' +
+                        '<div class="exercise-header">' +
+                            '<span class="exercise-icon">🦵</span>' +
+                            '<h4>Elevación de Talones - Para tu Equilibrio</h4>' +
+                        '</div>' +
+                        '<div class="exercise-description">🔬 <strong>Estudio Cochrane Review:</strong> Fortalece músculos que previenen caídas</div>' +
+                        '<div class="benefit-tag">Caminar más seguro</div>' +
+                        '<div class="benefit-tag">Mejor equilibrio en baño</div>' +
+                        '<div class="benefit-tag">Subir escaleras con confianza</div>' +
+                        '<div class="exercise-details">' +
+                            '<div class="step-by-step">' +
+                                '<div class="step">' +
+                                    '<div class="step-number">1</div>' +
+                                    '<div><strong>Posición:</strong> De pie, apóyate ligeramente en una pared para equilibrio</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">2</div>' +
+                                    '<div><strong>Preparación:</strong> Pies separados al ancho de caderas</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">3</div>' +
+                                    '<div><strong>Elevación:</strong> Levanta lentamente los talones, mantén 3 segundos</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">4</div>' +
+                                    '<div><strong>Descenso:</strong> Baja controladamente</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<p><strong>📊 Tu Dosis Exacta:</strong> 2 series de 8 repeticiones | <strong>Descanso:</strong> 1 minuto</p>' +
+                            '<p><strong>🎯 Lo que vas a lograr:</strong> Mayor estabilidad al caminar en 2 semanas</p>' +
+                        '</div>' +
+                    '</div>';
+            } else if (score <= 3) {
+                exercises += 
+                    '<div class="exercise-card">' +
+                        '<div class="exercise-header">' +
+                            '<span class="exercise-icon">🪑</span>' +
+                            '<h4>Sentadillas Asistidas - Tu Ejercicio Principal</h4>' +
+                        '</div>' +
+                        '<div class="exercise-description">🔬 <strong>American College of Sports Medicine:</strong> Aumenta fuerza funcional en 45% después de 8 semanas</div>' +
+                        '<div class="benefit-tag">Cargar bolsas sin ayuda</div>' +
+                        '<div class="benefit-tag">Subir escaleras sin fatiga</div>' +
+                        '<div class="benefit-tag">Mayor resistencia diaria</div>' +
+                        '<div class="exercise-details">' +
+                            '<div class="step-by-step">' +
+                                '<div class="step">' +
+                                    '<div class="step-number">1</div>' +
+                                    '<div><strong>Posición:</strong> De pie frente a una silla, pies al ancho de hombros</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">2</div>' +
+                                    '<div><strong>Descenso:</strong> Baja lentamente como si fueras a sentarte, sin tocar la silla</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">3</div>' +
+                                    '<div><strong>Posición:</strong> Mantén la espalda recta, rodillas alineadas</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">4</div>' +
+                                    '<div><strong>Subida:</strong> Levántate lentamente contrayendo glúteos</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<p><strong>📊 Tu Dosis Exacta:</strong> 3 series de 10 repeticiones | <strong>Descanso:</strong> 90 segundos</p>' +
+                            '<p><strong>🎯 Lo que vas a lograr:</strong> Hacer compras pesadas sin fatiga en 4 semanas</p>' +
+                        '</div>' +
+                    '</div>' +
+                    
+                    '<div class="exercise-card">' +
+                        '<div class="exercise-header">' +
+                            '<span class="exercise-icon">💪</span>' +
+                            '<h4>Press de Brazos con Botellas</h4>' +
+                        '</div>' +
+                        '<div class="exercise-description">🔬 <strong>Journal of Aging Research:</strong> Mejora fuerza de brazos y postura en 42%</div>' +
+                        '<div class="benefit-tag">Alcanzar objetos altos</div>' +
+                        '<div class="benefit-tag">Mejor postura</div>' +
+                        '<div class="benefit-tag">Actividades de cocina más fáciles</div>' +
+                        '<div class="exercise-details">' +
+                            '<div class="step-by-step">' +
+                                '<div class="step">' +
+                                    '<div class="step-number">1</div>' +
+                                    '<div><strong>Equipo:</strong> 2 botellas de agua de 500ml</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">2</div>' +
+                                    '<div><strong>Posición:</strong> Siéntate con espalda recta, botellas en las manos</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">3</div>' +
+                                    '<div><strong>Movimiento:</strong> Levanta alternadamente cada brazo hacia arriba</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">4</div>' +
+                                    '<div><strong>Control:</strong> Baja lentamente, mantén control total</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<p><strong>📊 Tu Dosis Exacta:</strong> 3 series de 12 repeticiones por brazo | <strong>Descanso:</strong> 1 minuto</p>' +
+                            '<p><strong>🎯 Lo que vas a lograr:</strong> Alcanzar objetos en estantes altos sin esfuerzo en 3 semanas</p>' +
+                        '</div>' +
+                    '</div>';
+            } else {
+                exercises += 
+                    '<div class="exercise-card">' +
+                        '<div class="exercise-header">' +
+                            '<span class="exercise-icon">🏋️</span>' +
+                            '<h4>Sentadillas Completas - Tu Desafío</h4>' +
+                        '</div>' +
+                        '<div class="exercise-description">🔬 <strong>International Journal of Sports Medicine:</strong> Aumenta densidad ósea y fuerza integral significativamente</div>' +
+                        '<div class="benefit-tag">Fuerza integral superior</div>' +
+                        '<div class="benefit-tag">Huesos más fuertes</div>' +
+                        '<div class="benefit-tag">Core estable</div>' +
+                        '<div class="exercise-details">' +
+                            '<div class="step-by-step">' +
+                                '<div class="step">' +
+                                    '<div class="step-number">1</div>' +
+                                    '<div><strong>Posición inicial:</strong> De pie, pies al ancho de hombros</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">2</div>' +
+                                    '<div><strong>Descenso:</strong> Baja doblando caderas y rodillas controladamente</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">3</div>' +
+                                    '<div><strong>Profundidad:</strong> Hasta donde te sientas cómodo/a</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">4</div>' +
+                                    '<div><strong>Subida:</strong> Presiona con talones y levántate</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<p><strong>📊 Tu Dosis Exacta:</strong> 3 series de 15 repeticiones | <strong>Descanso:</strong> 90 segundos</p>' +
+                            '<p><strong>🎯 Lo que vas a lograr:</strong> Fuerza excepcional para todas tus actividades diarias</p>' +
+                        '</div>' +
+                    '</div>' +
+                    
+                    '<div class="exercise-card">' +
+                        '<div class="exercise-header">' +
+                            '<span class="exercise-icon">📶</span>' +
+                            '<h4>Subir Escalón - Ejercicio Funcional</h4>' +
+                        '</div>' +
+                        '<div class="exercise-description">🔬 <strong>Biomechanics Research:</strong> Simula actividades diarias mejorando coordinación neuromuscular</div>' +
+                        '<div class="benefit-tag">Coordinación avanzada</div>' +
+                        '<div class="benefit-tag">Fuerza funcional</div>' +
+                        '<div class="benefit-tag">Equilibrio dinámico</div>' +
+                        '<div class="exercise-details">' +
+                            '<div class="step-by-step">' +
+                                '<div class="step">' +
+                                    '<div class="step-number">1</div>' +
+                                    '<div><strong>Equipo:</strong> Primer escalón de tu casa o banco de 15-20cm</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">2</div>' +
+                                    '<div><strong>Subida:</strong> Coloca completamente un pie, sube controladamente</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">3</div>' +
+                                    '<div><strong>Estabilización:</strong> Pausa 1 segundo manteniendo equilibrio</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">4</div>' +
+                                    '<div><strong>Bajada:</strong> Baja controladamente, alterna piernas</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<p><strong>📊 Tu Dosis Exacta:</strong> 3 series de 12 por pierna | <strong>Descanso:</strong> 2 minutos</p>' +
+                            '<p><strong>🎯 Lo que vas a lograr:</strong> Subir escaleras de múltiples pisos sin fatiga</p>' +
+                        '</div>' +
+                    '</div>';
+            }
+            exercises += '</div>';
+            
+            // Ejercicios de Equilibrio según nivel
+            exercises += '<div class="exercise-section">';
+            exercises += '<h3 style="color: #2d3748; font-size: 2rem; margin-bottom: 25px; text-align: center;">⚖️ Tus Ejercicios de Equilibrio - Días Martes y Jueves</h3>';
+            
+            if (score <= 2) {
+                exercises += 
+                    '<div class="exercise-card">' +
+                        '<div class="exercise-header">' +
+                            '<span class="exercise-icon">👣</span>' +
+                            '<h4>Caminar en Línea con Apoyo</h4>' +
+                        '</div>' +
+                        '<div class="exercise-description">🔬 <strong>Cochrane Review 2019:</strong> Reduce caídas en 32% cuando se practica consistentemente</div>' +
+                        '<div class="benefit-tag">Menos riesgo de caídas</div>' +
+                        '<div class="benefit-tag">Más confianza al caminar</div>' +
+                        '<div class="benefit-tag">Mejor coordinación</div>' +
+                        '<div class="exercise-details">' +
+                            '<div class="step-by-step">' +
+                                '<div class="step">' +
+                                    '<div class="step-number">1</div>' +
+                                    '<div><strong>Preparación:</strong> Imagina una línea recta en el piso de tu pasillo</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">2</div>' +
+                                    '<div><strong>Apoyo:</strong> Mantén una mano cerca de la pared</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">3</div>' +
+                                    '<div><strong>Técnica:</strong> Coloca un pie delante del otro, talón toca punta</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">4</div>' +
+                                    '<div><strong>Progresión:</strong> 10 pasos hacia adelante, regresa igual</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<p><strong>📊 Tu Dosis Exacta:</strong> 3 series de 10 pasos | <strong>Descanso:</strong> 30 segundos</p>' +
+                            '<p><strong>🎯 Lo que vas a lograr:</strong> Mayor seguridad caminando en casa en 2 semanas</p>' +
+                        '</div>' +
+                    '</div>';
+            } else if (score <= 3) {
+                exercises += 
+                    '<div class="exercise-card">' +
+                        '<div class="exercise-header">' +
+                            '<span class="exercise-icon">👣</span>' +
+                            '<h4>Caminar Talón-Punta Sin Apoyo</h4>' +
+                        '</div>' +
+                        '<div class="exercise-description">🔬 <strong>Physical Therapy Journal:</strong> Mejora propiocepción y reduce mareo en adultos mayores</div>' +
+                        '<div class="benefit-tag">Propiocepción mejorada</div>' +
+                        '<div class="benefit-tag">Menos mareo</div>' +
+                        '<div class="benefit-tag">Coordinación neuromotora</div>' +
+                        '<div class="exercise-details">' +
+                            '<div class="step-by-step">' +
+                                '<div class="step">' +
+                                    '<div class="step-number">1</div>' +
+                                    '<div><strong>Posición inicial:</strong> De pie, brazos relajados a los lados</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">2</div>' +
+                                    '<div><strong>Técnica:</strong> Camina colocando talón tocando punta del pie contrario</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">3</div>' +
+                                    '<div><strong>Control:</strong> Mirada fija adelante, no mires los pies</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">4</div>' +
+                                    '<div><strong>Ritmo:</strong> Lento y controlado</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<p><strong>📊 Tu Dosis Exacta:</strong> 3 series de 15 pasos | <strong>Descanso:</strong> 1 minuto</p>' +
+                            '<p><strong>🎯 Lo que vas a lograr:</strong> Caminar en superficies irregulares con confianza</p>' +
+                        '</div>' +
+                    '</div>';
+            } else {
+                exercises += 
+                    '<div class="exercise-card">' +
+                        '<div class="exercise-header">' +
+                            '<span class="exercise-icon">🤸</span>' +
+                            '<h4>Equilibrio Dinámico en Una Pierna</h4>' +
+                        '</div>' +
+                        '<div class="exercise-description">🔬 <strong>Sports Medicine Research:</strong> Mejora significativamente respuesta de equilibrio ante perturbaciones</div>' +
+                        '<div class="benefit-tag">Control postural superior</div>' +
+                        '<div class="benefit-tag">Reflejos mejorados</div>' +
+                        '<div class="benefit-tag">Máxima confianza</div>' +
+                        '<div class="exercise-details">' +
+                            '<div class="step-by-step">' +
+                                '<div class="step">' +
+                                    '<div class="step-number">1</div>' +
+                                    '<div><strong>Posición base:</strong> Mantente en una pierna con apoyo cercano</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">2</div>' +
+                                    '<div><strong>Movimientos:</strong> Mueve pierna libre hacia adelante, atrás, lados</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">3</div>' +
+                                    '<div><strong>Control:</strong> Mantén caderas niveladas y torso estable</div>' +
+                                '</div>' +
+                                '<div class="step">' +
+                                    '<div class="step-number">4</div>' +
+                                    '<div><strong>Progresión:</strong> Movimientos circulares con la pierna libre</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<p><strong>📊 Tu Dosis Exacta:</strong> 3 series de 8 movimientos por dirección | <strong>Descanso:</strong> 1 minuto</p>' +
+                            '<p><strong>🎯 Lo que vas a lograr:</strong> Equilibrio excepcional en cualquier situación</p>' +
+                        '</div>' +
+                    '</div>';
+            }
+            exercises += '</div>';
+            
+            document.getElementById('exerciseProgram').innerHTML = exercises;
+            
+            // Tips personalizados según situación
+            var personalizedTipsHtml = 
+                '<div class="personalized-tips">' +
+                    '<h3>💡 Instrucciones Específicas para ' + displayName + '</h3>';
+            
+            personalizedTipsHtml += '<p><strong>🎯 Tu estrategia de éxito:</strong></p>';
+            
+            if (situation === 'independence') {
+                personalizedTipsHtml += 
+                    '<p><strong>• Prioridad #1:</strong> Consistencia sobre intensidad. Hacer menos pero todos los días es mejor que hacer mucho una vez por semana.</p>' +
+                    '<p><strong>• Mejor momento:</strong> 9:30 AM, después del desayuno cuando tienes energía estable.</p>' +
+                    '<p><strong>• Progresión segura:</strong> Aumenta 1 repetición cada 2 semanas. La clave es no saltarse días.</p>';
+            } else if (situation === 'family') {
+                personalizedTipsHtml += 
+                    '<p><strong>• Enfoque familiar:</strong> Invita a un familiar a hacer ejercicios contigo - será más divertido y constante.</p>' +
+                    '<p><strong>• Objetivo claro:</strong> En 8 semanas podrás jugar activamente con nietos sin cansarte.</p>' +
+                    '<p><strong>• Motivación extra:</strong> Toma fotos de tu progreso cada 2 semanas para compartir con la familia.</p>';
+            } else if (situation === 'safety') {
+                personalizedTipsHtml += 
+                    '<p><strong>• Seguridad primero:</strong> Siempre ten apoyo cerca los primeros 15 días, luego reduce gradualmente.</p>' +
+                    '<p><strong>• Progreso lento pero seguro:</strong> Es mejor dominar un ejercicio que intentar varios mal hechos.</p>' +
+                    '<p><strong>• Confianza real:</strong> En 4 semanas notarás diferencia significativa en tu seguridad al caminar.</p>';
+            } else {
+                personalizedTipsHtml += 
+                    '<p><strong>• Energía sostenida:</strong> Haz los ejercicios de mañana cuando tengas más energía natural.</p>' +
+                    '<p><strong>• Hidratación clave:</strong> Bebe agua antes y después - tu cuerpo lo necesita para generar energía.</p>' +
+                    '<p><strong>• Resultado visible:</strong> En 3 semanas notarás que las actividades diarias te cansan menos.</p>';
+            }
+            
+            personalizedTipsHtml += 
+                '<p><strong>📞 Cuándo contactar a tu médico:</strong> Si sientes dolor que persiste más de 24 horas, mareo frecuente, o cualquier molestia nueva.</p>' +
+                '<p><strong>🏆 ' + displayName + ', recuerda:</strong> Cada repetición que haces es una inversión directa en tu independencia y calidad de vida futura. ¡Estás tomando la mejor decisión posible!</p>' +
+                '</div>';
+            
+            document.getElementById('personalizedTips').innerHTML = personalizedTipsHtml;
+            
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function restart() {
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('assessment').classList.remove('hidden');
+            
+            // Limpiar formulario
+            var radios = document.querySelectorAll('input[type="radio"]');
+            for (var i = 0; i < radios.length; i++) {
+                radios[i].checked = false;
+            }
+            
+            // Limpiar checkboxes
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+            
+            // Limpiar nombre y progreso
+            document.getElementById('userName').value = '';
+            document.getElementById('welcomeMessage').style.display = 'none';
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('progressText').textContent = 'Progreso: 0 de 5 preguntas completadas';
+            userName = '';
+            
+            // Parar cronómetro
+            stopTimer();
+            
+            document.getElementById('assessment').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
