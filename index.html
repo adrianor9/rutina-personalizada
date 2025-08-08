@@ -982,6 +982,38 @@ body.large-text .exercise-image{ max-width: 180px; }
   .controls{ bottom: 24px; right: 24px; }
 }
 
+
+/* ===== Mobile deep polish (v15) ===== */
+@media (max-width: 520px){
+  /* Eliminar marco morado para ganar ancho útil */
+  body{ background:#ffffff; padding:10px; }
+  .container{ max-width: 100%; margin: 0; }
+  /* Tarjetas más compactas */
+  .exercise-card{ border-radius: 16px; padding: 14px; }
+  .exercise-header h4{ font-size: clamp(1.05rem, 2.2vw + .7rem, 1.3rem); }
+  /* Chips que no se montan entre sí */
+  .benefit-container, .tags, .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .benefit-tag{ margin:0; }
+  /* Pasos: mejor flujo y menos “ruido visual” del círculo */
+  .step{ padding: 12px 12px; border-radius: 14px; line-height: 1.5; }
+  .step .step-number{
+    width: 28px; height: 28px; font-size: .95rem; margin-right: 10px;
+    border-radius: 10px; /* de círculo -> pastilla cuadrada más discreta */
+    background: #667eea14; color:#3b3b3b; border:1px solid #cbd5e0; font-weight:700;
+  }
+  .step strong{ display:inline; }
+  .exercise-description{ font-size: 1rem; }
+  .exercise-image{ max-width: 150px; }
+  /* Botón flotante: no cubre texto; más pequeño en móvil */
+  .controls{ right: 10px; bottom: 14px; }
+  .controls .fab{ width: 44px; height: 44px; font-size: 20px; }
+  .control-btn{ padding: 10px 12px; font-size: .95rem; }
+}
+/* Para accesibilidad: cuando el usuario activa “Letra Grande” (clase ya usada) */
+body.large-text .step .step-number{
+  width: 30px; height: 30px; font-size: 1rem;
+}
+
 </style>
 </head>
 <body>
