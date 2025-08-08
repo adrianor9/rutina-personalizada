@@ -1445,7 +1445,7 @@ input[type="text"].name-input:focus{ background-color:#fff; }
                 </label>
             </div>
             
-            <button class="btn" onclick="generateProgram()" style="line-height: 1.4;">
+            <button id="createProgramBtn" class="btn" onclick="generateProgram()" style="line-height: 1.4;">
                 🎯 Crear Mi Programa Personalizado<br>
                 <span style="font-size: 1.1rem; font-weight: 500;">(y ver mis ejercicios ahora)</span>
             </button>
@@ -2532,7 +2532,91 @@ input[type="text"].name-input:focus{ background-color:#fff; }
     window.restart = function(){ location.reload(); };
   }
 })();
-</script>
 
+// ===== GUIADO CON BOTÓN "SIGUIENTE" DESDE EL NOMBRE HASTA CADA PREGUNTA =====
+document.addEventListener('DOMContentLoaded', function () {
+    try {
+        // 2.1) Identificar contenedor e input del nombre
+        var nameSection = document.querySelector('.name-input-section');
+        var nameInput   = document.getElementById('userName');
+
+        // 2.2) Crear botón "Siguiente"
+        var nextBtn = document.createElement('button');
+        nextBtn.id = 'nextToQ1';
+        nextBtn.type = 'button';
+        nextBtn.textContent = 'Siguiente ➜';
+        nextBtn.className = 'secondary-btn';
+        nextBtn.disabled = true;
+        // centrar bien en todos los tamaños
+        nextBtn.style.display = 'block';
+        nextBtn.style.margin = '12px auto 0 auto';
+        nextBtn.style.maxWidth = '360px';
+        nextBtn.style.fontSize = '1.1rem';
+        nextBtn.setAttribute('aria-disabled', 'true');
+
+        // Insertar al final del bloque del nombre
+        if (nameSection) { nameSection.appendChild(nextBtn); }
+
+        // 2.3) Asignar IDs a las preguntas en orden
+        var questionEls = document.querySelectorAll('#assessment .question');
+        questionEls.forEach(function(el, i){
+            el.id = 'q' + (i+1);
+        });
+
+        // Función de scroll suave y centrado
+        function scrollCenter(el){
+            if (!el) return;
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // 2.4) Habilitar el botón "Siguiente" cuando el usuario escriba su nombre
+        function toggleNextState(){
+            var hasName = !!(nameInput && nameInput.value.trim().length);
+            nextBtn.disabled = !hasName;
+            nextBtn.setAttribute('aria-disabled', String(!hasName));
+        }
+        if (nameInput){
+            nameInput.addEventListener('input', toggleNextState);
+            toggleNextState();
+        }
+
+        // 2.5) Al pulsar "Siguiente", bajar a la primera pregunta y enfocar su primer radio
+        nextBtn.addEventListener('click', function(){
+            var q1 = document.getElementById('q1');
+            scrollCenter(q1);
+            // Enfocar primer input para guiar
+            var firstRadio = q1 ? q1.querySelector('input[type="radio"]') : null;
+            if (firstRadio) { firstRadio.focus({ preventScroll: true }); }
+        });
+
+        // 2.6) Al contestar una pregunta, bajar a la siguiente (o al botón final)
+        var groupNames = ['activity','chairstand','balance','limitations','situation'];
+        groupNames.forEach(function(groupName, idx){
+            var radios = document.getElementsByName(groupName);
+            Array.prototype.forEach.call(radios, function(r){
+                r.addEventListener('change', function(){
+                    var nextIndex = idx + 1; // siguiente bloque
+                    if (nextIndex < questionEls.length) {
+                        var nextQ = document.getElementById('q' + (nextIndex+1));
+                        scrollCenter(nextQ);
+                        // Enfocar primer radio de la siguiente pregunta
+                        var nextRadio = nextQ ? nextQ.querySelector('input[type="radio"]') : null;
+                        if (nextRadio) { nextRadio.focus({ preventScroll: true }); }
+                    } else {
+                        // última pregunta -> ir al botón "Crear Mi Programa"
+                        var finalBtn = document.getElementById('createProgramBtn');
+                        scrollCenter(finalBtn);
+                        if (finalBtn) { finalBtn.focus({ preventScroll: true }); }
+                    }
+                });
+            });
+        });
+    } catch (e){
+        console.warn('Guided flow init error:', e);
+    }
+});
+// ===== FIN GUIADO =====
+
+</script>
 </body>
 </html>
