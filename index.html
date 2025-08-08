@@ -1235,6 +1235,38 @@ input, textarea, button{ font: inherit; }
   .controls .fab{ width: 44px !important; height: 44px !important; }
 }
 
+
+/* ===== v20 Steps readability & button relocation ===== */
+@media (max-width: 520px){
+  .exercise-card .step, .exercise-card .step-item, .exercise-card .exercise-step, 
+  .exercise-card .howto-step, .step, .step-item, .exercise-step, .howto-step{
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 14px 16px !important;
+    border-radius: 16px !important;
+    text-align: left !important;
+  }
+  .step .badge, .step .number, .step-number, .step > .num, .exercise-step .num{
+    flex: 0 0 auto !important;
+    margin-right: 6px !important;
+  }
+  .step p, .exercise-step p, .step-item p{
+    margin: 4px 0 !important;
+    line-height: 1.6 !important;
+    font-size: clamp(1rem, 4.2vw, 1.2rem) !important;
+  }
+  .step strong, .exercise-step strong{ font-weight: 700 !important; }
+  .step > *, .exercise-step > *{ min-width: 0 !important; }
+  .step .content, .exercise-step .content{ flex: 1 1 auto !important; }
+  .steps, .howto, .how-to, .exercise-steps{
+    display: grid !important;
+    gap: 14px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2397,7 +2429,24 @@ input, textarea, button{ font: inherit; }
   function collapse(){ ctr.classList.add('collapsed'); }
   fab.onclick = function(e){ e.stopPropagation(); ctr.classList.contains('collapsed') ? expand() : collapse(); };
 
-  //
+  // Dark mode toggle
+  const key = 'prefers-dark-mode-manual';
+  const btnDark = document.getElementById('toggleDark');
+  function updateLabel(){
+    if (!btnDark) return;
+    btnDark.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo claro' : '🌙 Modo oscuro';
+  }
+  if (btnDark){
+    const saved = localStorage.getItem(key);
+    if (saved === '1') document.body.classList.add('dark-mode');
+    updateLabel();
+    btnDark.addEventListener('click', function(){
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem(key, document.body.classList.contains('dark-mode') ? '1' : '0');
+      updateLabel();
+    });
+  }
+
   // Auto-hide behavior (desktop too)
   let hideTimer;
   function scheduleHide(){
@@ -2414,15 +2463,6 @@ input, textarea, button{ font: inherit; }
 })();
 
 
-    /* dark toggle removed */
-// Update label if system preference changes and no explicit choice was saved
-try{
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    media.addEventListener?.('change', (e) => {
-        const saved = localStorage.getItem('am_theme');
-        if(!saved){ setDark(e.matches); }
-    });
-}catch(e){}
 </script>
 
 </body>
