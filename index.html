@@ -1142,6 +1142,32 @@ h1,h2,h3,h4,h5,h6{ color: var(--ink); }
 .controls .control-btn{ border-radius: 9999px; padding: 10px 14px; background:#6372ff; color:#fff; border:none; box-shadow: 0 6px 14px rgba(0,0,0,.15); }
 .controls.is-hidden{ opacity:.25; transform: translateY(6px); transition: opacity .2s, transform .2s; }
 
+
+/* ===== v18 Mobile spacing & clipping fixes ===== */
+@media (max-width: 520px){
+  html, body{ padding: 0 !important; margin: 0 !important; background: var(--bg) !important; }
+  .container{ max-width: 100% !important; padding: 0 12px !important; margin: 0 auto !important; }
+  .card{ margin: 0 0 16px 0 !important; border-radius: 16px !important; }
+  .scientific-credentials, .welcome-section, .name-input-section,
+  .question, .daily-schedule, .timer-section, .checklist,
+  .personalized-tips, .safety-warning, .safety-light, .exercise-card{
+    margin-left: 0 !important; margin-right: 0 !important;
+  }
+  h1{ font-size: clamp(1.75rem, 4.5vw + 1rem, 2.2rem) !important; }
+  h2{ font-size: clamp(1.4rem, 3.8vw + 0.9rem, 1.9rem) !important; }
+  h3{ font-size: clamp(1.1rem, 3.4vw + 0.8rem, 1.35rem) !important; }
+  /* Better wrapping for large buttons and headings */
+  .btn{ white-space: normal !important; }
+  .subtitle, p, li, .option label{
+    overflow-wrap: anywhere; word-break: normal; hyphens: auto;
+  }
+  /* Floating controls safe zone */
+  .controls{ right: 10px !important; bottom: 14px !important; top: auto !important; }
+}
+
+/* Ensure the page never shows the old purple gradient frame */
+body{ background: var(--bg) !important; }
+
 </style>
 </head>
 <body>
@@ -2336,6 +2362,43 @@ h1,h2,h3,h4,h5,h6{ color: var(--ink); }
   window.addEventListener('scroll', scheduleHide, {passive:true});
   scheduleHide();
 })();
+
+
+// ===== Theme (light/dark) handling with persistence =====
+const DARK_CLASS = 'dark-mode';
+const darkBtn = document.getElementById('toggleDark');
+
+function setDark(enabled){
+    document.body.classList.toggle(DARK_CLASS, !!enabled);
+    try{ localStorage.setItem('am_theme', enabled ? 'dark' : 'light'); }catch(e){}
+    if(darkBtn){
+        darkBtn.textContent = document.body.classList.contains(DARK_CLASS) ? '☀️ Modo claro' : '🌙 Modo oscuro';
+    }
+}
+
+// Initialize on load: prefer saved; else system preference
+(function initTheme(){
+    let saved = null;
+    try{ saved = localStorage.getItem('am_theme'); }catch(e){ saved = null; }
+    if(saved === 'dark'){ setDark(true); }
+    else if(saved === 'light'){ setDark(false); }
+    else{
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setDark(prefersDark);
+    }
+})();
+
+if(darkBtn){
+    darkBtn.addEventListener('click', () => setDark(!document.body.classList.contains(DARK_CLASS)));
+}
+// Update label if system preference changes and no explicit choice was saved
+try{
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    media.addEventListener?.('change', (e) => {
+        const saved = localStorage.getItem('am_theme');
+        if(!saved){ setDark(e.matches); }
+    });
+}catch(e){}
 </script>
 
 </body>
