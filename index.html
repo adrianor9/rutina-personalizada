@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Programa Personalizado de Ejercicio para Adultos Mayores - Adrián Galván</title>
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programa Personalizado de Ejercicio para Adultos Mayores - Adrián Galván</title>
+    <style>
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1268,381 +1267,351 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   .name-input-section p{ margin-bottom: 10px; }
 }
 
-
-
-/* ===== Wizard (paso a paso) ===== */
-.stepper { position: relative; }
-.step { display: none; animation: fadeIn .22s ease-out; }
-.step.active { display: block; }
-#assessment { min-height: 540px; }
-@keyframes fadeIn { from {opacity: 0; transform: translateY(6px);} to {opacity: 1; transform: none;} }
-.step-nav { display:flex; justify-content: space-between; gap:12px; margin-top:12px; }
-.step-counter { font-weight:700; font-size:1rem; opacity:.7; text-align:center; margin:10px 0 0; }
-/* Móvil: un poco más bajo */
-@media (max-width: 520px){ #assessment{ min-height: 520px; } }
-
-/* ===== Wizard dots + smoother transitions ===== */
-:root{
-  --wizard-ease: cubic-bezier(.22,.61,.36,1);
-  --wizard-dur: 260ms;
-}
-
-/* Transition model: crossfade + gentle translate, no layout jump because #assessment has min-height */
-.step{
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity var(--wizard-dur) var(--wizard-ease),
-              transform var(--wizard-dur) var(--wizard-ease);
-  pointer-events: none;
-}
-.step.active{
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-/* Optional: a tiny fade-out when leaving */
-.step.leaving{
-  opacity: 0;
-  transform: translateY(-8px);
-}
-
-/* Dots indicator */
-.step-dots{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-}
-.step-dots .dot{
-  width: 10px; height: 10px;
-  border-radius: 999px;
-  border: 0;
-  background: #cbd5e1; /* slate-300 */
-  cursor: pointer;
-  transition: transform 140ms var(--wizard-ease), background-color 180ms var(--wizard-ease);
-}
-.step-dots .dot:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(79,70,229,.2); }
-.step-dots .dot:hover{ transform: scale(1.15); }
-.step-dots .dot.active{ background: #6366f1; } /* indigo-500 */
-.step-dots .dot.completed{ background: #22c55e; } /* green-500 for pasos ya contestados */
-
-@media (max-width: 520px){
-  .step-dots{ gap: 10px; }
-  .step-dots .dot{ width: 11px; height: 11px; }
-}
-
 </style>
 </head>
 <body>
-<div class="container">
-<!-- CONTROLES FLOTANTES -->
-<div class="controls collapsed" id="controls">
-<button aria-label="Más opciones" class="fab" id="fabToggle">⋮</button>
-<button class="control-btn" onclick="toggleLargeText()">🔍 Letra Grande</button>
-<button class="control-btn" onclick="shareWithFamily()">📱 Compartir</button>
-</div>
-<!-- HEADER MEJORADO -->
-<div class="card">
-<h1>💪 Programa Personalizado de Ejercicio</h1>
-<p class="subtitle"><strong>Especialmente diseñado por expertos para Adultos Mayores</strong></p>
-<p class="subtitle">Mejora tu fuerza, equilibrio y calidad de vida de forma segura</p>
+    <div class="container">
+        <!-- CONTROLES FLOTANTES -->
+        <div class="controls collapsed" id="controls">
+  <button class="fab" id="fabToggle" aria-label="Más opciones">⋮</button>
+
+            <button class="control-btn" onclick="toggleLargeText()">🔍 Letra Grande</button>
+            <button class="control-btn" onclick="shareWithFamily()">📱 Compartir</button>
+        </div>
+        
+        <!-- HEADER MEJORADO -->
+        <div class="card">
+            <h1>💪 Programa Personalizado de Ejercicio</h1>
+            <p class="subtitle"><strong>Especialmente diseñado por expertos para Adultos Mayores</strong></p>
+            <p class="subtitle">Mejora tu fuerza, equilibrio y calidad de vida de forma segura</p>
+            
+            
 <div class="scientific-credentials">
-<h3>🏆 Respaldo Científico Comprobado</h3>
-<p><strong>• Universidad de Harvard (2023):</strong> Demostró que hacer ejercicios de equilibrio simples, como los que aprenderás en esta guía, puede reducir el riesgo de caídas hasta en un 32%.</p>
-<p><strong>• Journal of Aging Research:</strong> Encontró que ejercicios de fuerza como los que aquí te enseñaremos ayudan a mejorar la independencia para realizar actividades diarias en un 45%.</p>
-<p><strong>• OMS y Colegio Americano de Medicina Deportiva:</strong> Respaldan oficialmente las recomendaciones que aplicamos en esta guía.</p>
-<p><strong>• Experiencia comprobada:</strong> Más de 50,000 adultos mayores han fortalecido su cuerpo y mejorado su calidad de vida siguiendo programas como este.</p>
+    <h3>🏆 Respaldo Científico Comprobado</h3>
+    <p><strong>• Universidad de Harvard (2023):</strong> Demostró que hacer ejercicios de equilibrio simples, como los que aprenderás en esta guía, puede reducir el riesgo de caídas hasta en un 32%.</p>
+    <p><strong>• Journal of Aging Research:</strong> Encontró que ejercicios de fuerza como los que aquí te enseñaremos ayudan a mejorar la independencia para realizar actividades diarias en un 45%.</p>
+    <p><strong>• OMS y Colegio Americano de Medicina Deportiva:</strong> Respaldan oficialmente las recomendaciones que aplicamos en esta guía.</p>
+    <p><strong>• Experiencia comprobada:</strong> Más de 50,000 adultos mayores han fortalecido su cuerpo y mejorado su calidad de vida siguiendo programas como este.</p>
 </div>
-<!-- INSTRUCCIONES INICIALES MUY VISIBLES -->
-<div style="background: #fff3cd; border-left: 6px solid #ff9800; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
-<h3 style="color: #e65100; margin-bottom: 15px;">📋 Cómo usar esta guía en 3 pasos simples</h3>
-<ol style="font-size: 1.2rem; line-height: 1.6; color: #5d4037;">
-<li style="margin-bottom: 10px;"><strong>Escriba su nombre</strong> en el cuadro de abajo</li>
-<li style="margin-bottom: 10px;"><strong>Responda las 5 preguntas</strong> seleccionando la opción que más se parezca a su situación</li>
-<li style="margin-bottom: 10px;"><strong>Presione el botón verde grande</strong> "Crear Mi Programa Personalizado" y verá su rutina personalizada al instante</li>
-</ol>
-<p style="font-size: 1.1rem; color: #e65100; font-weight: 600; margin-top: 15px;">⏱️ Toma solo 3 minutos y es completamente gratis</p>
-</div>
-<div class="name-input-section">
-<h3>👋 ¡Personalicemos tu experiencia!</h3>
-<p>¿Cómo te gustaría que te llamemos?</p>
-<input class="name-input" id="userName" maxlength="20" placeholder="Escribe tu nombre aquí" type="text"/>
-<!-- BOTÓN LETRA GRANDE VISIBLE -->
-<div style="margin-top: 20px;">
-<button class="secondary-btn" onclick="toggleLargeText()" style="font-size: 1.2rem; padding: 15px 25px;">
+
+
+            <!-- INSTRUCCIONES INICIALES MUY VISIBLES -->
+            <div style="background: #fff3cd; border-left: 6px solid #ff9800; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                <h3 style="color: #e65100; margin-bottom: 15px;">📋 Cómo usar esta guía en 3 pasos simples</h3>
+                <ol style="font-size: 1.2rem; line-height: 1.6; color: #5d4037;">
+                    <li style="margin-bottom: 10px;"><strong>Escriba su nombre</strong> en el cuadro de abajo</li>
+                    <li style="margin-bottom: 10px;"><strong>Responda las 5 preguntas</strong> seleccionando la opción que más se parezca a su situación</li>
+                    <li style="margin-bottom: 10px;"><strong>Presione el botón verde grande</strong> "Crear Mi Programa Personalizado" y verá su rutina personalizada al instante</li>
+                </ol>
+                <p style="font-size: 1.1rem; color: #e65100; font-weight: 600; margin-top: 15px;">⏱️ Toma solo 3 minutos y es completamente gratis</p>
+            </div>
+
+            <div class="name-input-section">
+                <h3>👋 ¡Personalicemos tu experiencia!</h3>
+                <p>¿Cómo te gustaría que te llamemos?</p>
+                <input type="text" id="userName" class="name-input" placeholder="Escribe tu nombre aquí" maxlength="20">
+                
+                <!-- BOTÓN LETRA GRANDE VISIBLE -->
+                <div style="margin-top: 20px;">
+                    <button class="secondary-btn" onclick="toggleLargeText()" style="font-size: 1.2rem; padding: 15px 25px;">
                         🔍 Aumentar tamaño de letra para leer más fácil
                     </button>
-</div>
-</div>
-</div>
-<!-- EVALUACIÓN MEJORADA -->
-<div class="card" id="assessment">
-<h2>📋 Evaluación Personalizada</h2>
-<div class="welcome-section" id="welcomeMessage" style="display: none;">
-<h3>¡Hola, <span id="displayName">Amigo/a</span>! 🌟</h3>
-<p style="font-size: 1.1rem;">Vamos a crear un programa de ejercicio especialmente diseñado para ti. Esta evaluación toma solo 3 minutos y nos ayudará a recomendarte los ejercicios más seguros y efectivos para tu nivel actual.</p>
-</div>
-<div class="progress-container">
-<div class="progress-text" id="progressText">Progreso: 0 de 5 preguntas completadas</div>
-<div class="progress-bar">
-<div class="progress-fill" id="progressFill"></div>
-</div>
-</div>
-<!-- PREGUNTA 1 MEJORADA -->
-<div class="stepper" id="stepper">
-  <div class="step-dots" id="stepDots" aria-label="Progreso"></div><section class="step active" data-step="1"><div class="question">
-<h3>1. ¿Cómo describirías tu nivel actual de actividad física?</h3>
-<p style="color: #666; margin-bottom: 15px;">Esta información nos ayuda a ajustar la intensidad de tus ejercicios</p>
-<label class="option">
-<input name="activity" onchange="updateProgress()" type="radio" value="1"/>
-<span><strong>Sedentario</strong> - Paso la mayor parte del día sentado/a, poca actividad física</span>
-</label>
-<label class="option">
-<input name="activity" onchange="updateProgress()" type="radio" value="2"/>
-<span><strong>Algo activo</strong> - Camino ocasionalmente, hago tareas domésticas ligeras</span>
-</label>
-<label class="option">
-<input name="activity" onchange="updateProgress()" type="radio" value="3"/>
-<span><strong>Moderadamente activo</strong> - Hago ejercicio ligero 1-2 veces por semana</span>
-</label>
-<label class="option">
-<input name="activity" onchange="updateProgress()" type="radio" value="4"/>
-<span><strong>Muy activo</strong> - Hago ejercicio regular 3 o más veces por semana</span>
-</label>
-</div><div class="step-nav"><button class="secondary-btn" data-prev="" disabled="">Anterior</button><button class="secondary-btn" data-next="">Siguiente</button></div><div class="step-counter">Paso 1 de 5</div></section><section class="step" data-step="2"><div class="question">
-<h3>2. ¿Puedes levantarte de una silla sin usar las manos?</h3>
-<p style="color: #666; margin-bottom: 15px;">Este es un indicador clave de la fuerza en las piernas</p>
-<label class="option">
-<input name="chairstand" onchange="updateProgress()" type="radio" value="1"/>
-<span><strong>No puedo</strong> - Siempre necesito apoyo de mis manos o ayuda</span>
-</label>
-<label class="option">
-<input name="chairstand" onchange="updateProgress()" type="radio" value="2"/>
-<span><strong>Con dificultad</strong> - Puedo hacerlo pero me cuesta trabajo</span>
-</label>
-<label class="option">
-<input name="chairstand" onchange="updateProgress()" type="radio" value="3"/>
-<span><strong>Sin problemas</strong> - Lo hago normalmente sin dificultad</span>
-</label>
-<label class="option">
-<input name="chairstand" onchange="updateProgress()" type="radio" value="4"/>
-<span><strong>Muy fácil</strong> - Puedo hacerlo repetidamente sin cansarme</span>
-</label>
-</div><div class="step-nav"><button class="secondary-btn" data-prev="">Anterior</button><button class="secondary-btn" data-next="">Siguiente</button></div><div class="step-counter">Paso 2 de 5</div></section><section class="step" data-step="3"><div class="question">
-<h3>3. ¿Cómo evaluarías tu equilibrio actual?</h3>
-<p style="color: #666; margin-bottom: 15px;">El equilibrio es fundamental para prevenir caídas</p>
-<label class="option">
-<input name="balance" onchange="updateProgress()" type="radio" value="1"/>
-<span><strong>Inestable</strong> - Me preocupan las caídas, evito ciertos movimientos</span>
-</label>
-<label class="option">
-<input name="balance" onchange="updateProgress()" type="radio" value="2"/>
-<span><strong>Regular</strong> - A veces me siento inseguro/a al caminar</span>
-</label>
-<label class="option">
-<input name="balance" onchange="updateProgress()" type="radio" value="3"/>
-<span><strong>Bueno</strong> - Rara vez tengo problemas de equilibrio</span>
-</label>
-<label class="option">
-<input name="balance" onchange="updateProgress()" type="radio" value="4"/>
-<span><strong>Excelente</strong> - Me siento muy estable en todas mis actividades</span>
-</label>
-</div><div class="step-nav"><button class="secondary-btn" data-prev="">Anterior</button><button class="secondary-btn" data-next="">Siguiente</button></div><div class="step-counter">Paso 3 de 5</div></section><section class="step" data-step="4"><div class="question">
-<h3>4. ¿Tienes alguna limitación física o condición médica?</h3>
-<p style="color: #666; margin-bottom: 15px;">Esto nos ayuda a personalizar ejercicios seguros para ti</p>
-<label class="option">
-<input name="limitations" onchange="updateProgress()" type="radio" value="1"/>
-<span><strong>Varias limitaciones</strong> - Tengo restricciones médicas importantes</span>
-</label>
-<label class="option">
-<input name="limitations" onchange="updateProgress()" type="radio" value="2"/>
-<span><strong>Algunas limitaciones</strong> - Debo tener cuidado con ciertos movimientos</span>
-</label>
-<label class="option">
-<input name="limitations" onchange="updateProgress()" type="radio" value="3"/>
-<span><strong>Muy pocas</strong> - Solo pequeñas molestias ocasionales</span>
-</label>
-<label class="option">
-<input name="limitations" onchange="updateProgress()" type="radio" value="4"/>
-<span><strong>Ninguna limitación</strong> - No tengo restricciones físicas significativas</span>
-</label>
-</div><div class="step-nav"><button class="secondary-btn" data-prev="">Anterior</button><button class="secondary-btn" data-next="">Siguiente</button></div><div class="step-counter">Paso 4 de 5</div></section><section class="step" data-step="5"><div class="question">
-<h3>5. ¿Cuál describe mejor tu situación actual?</h3>
-<p style="color: #666; margin-bottom: 15px;">Esto nos ayuda a personalizar los beneficios más importantes para ti</p>
-<label class="option">
-<input name="situation" onchange="updateProgress()" type="radio" value="independence"/>
-<span><strong>Mantener mi independencia</strong> - Vivo solo/a y quiero seguir cuidándome</span>
-</label>
-<label class="option">
-<input name="situation" onchange="updateProgress()" type="radio" value="family"/>
-<span><strong>Seguir activo con mi familia</strong> - Quiero disfrutar más con hijos/nietos</span>
-</label>
-<label class="option">
-<input name="situation" onchange="updateProgress()" type="radio" value="safety"/>
-<span><strong>Sentirme más seguro</strong> - Me preocupa caerme o lastimarme</span>
-</label>
-<label class="option">
-<input name="situation" onchange="updateProgress()" type="radio" value="energy"/>
-<span><strong>Tener más energía</strong> - Me canso fácilmente en mis actividades diarias</span>
-</label>
-</div><div class="step-nav"><button class="secondary-btn" data-prev="">Anterior</button><button class="btn" onclick="generateProgram()" style="line-height:1.4;">🎯 Crear Mi Programa Personalizado<br/><span style="font-size: 1.1rem; font-weight: 500;">(y ver mis ejercicios ahora)</span></button></div><div class="step-counter">Paso 5 de 5</div></section></div>
-<!-- PREGUNTA 2 MEJORADA -->
+                </div>
+            </div>
+        </div>
 
-<!-- PREGUNTA 3 MEJORADA -->
+        <!-- EVALUACIÓN MEJORADA -->
+        <div class="card" id="assessment">
+            <h2>📋 Evaluación Personalizada</h2>
+            <div id="welcomeMessage" class="welcome-section" style="display: none;">
+                <h3>¡Hola, <span id="displayName">Amigo/a</span>! 🌟</h3>
+                <p style="font-size: 1.1rem;">Vamos a crear un programa de ejercicio especialmente diseñado para ti. Esta evaluación toma solo 3 minutos y nos ayudará a recomendarte los ejercicios más seguros y efectivos para tu nivel actual.</p>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-text" id="progressText">Progreso: 0 de 5 preguntas completadas</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <!-- PREGUNTA 1 MEJORADA -->
+            <div class="question">
+                <h3>1. ¿Cómo describirías tu nivel actual de actividad física?</h3>
+                <p style="color: #666; margin-bottom: 15px;">Esta información nos ayuda a ajustar la intensidad de tus ejercicios</p>
+                <label class="option">
+                    <input type="radio" name="activity" value="1" onchange="updateProgress()">
+                    <span><strong>Sedentario</strong> - Paso la mayor parte del día sentado/a, poca actividad física</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="activity" value="2" onchange="updateProgress()">
+                    <span><strong>Algo activo</strong> - Camino ocasionalmente, hago tareas domésticas ligeras</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="activity" value="3" onchange="updateProgress()">
+                    <span><strong>Moderadamente activo</strong> - Hago ejercicio ligero 1-2 veces por semana</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="activity" value="4" onchange="updateProgress()">
+                    <span><strong>Muy activo</strong> - Hago ejercicio regular 3 o más veces por semana</span>
+                </label>
+            </div>
 
-<!-- PREGUNTA 4 MEJORADA -->
+            <!-- PREGUNTA 2 MEJORADA -->
+            <div class="question">
+                <h3>2. ¿Puedes levantarte de una silla sin usar las manos?</h3>
+                <p style="color: #666; margin-bottom: 15px;">Este es un indicador clave de la fuerza en las piernas</p>
+                <label class="option">
+                    <input type="radio" name="chairstand" value="1" onchange="updateProgress()">
+                    <span><strong>No puedo</strong> - Siempre necesito apoyo de mis manos o ayuda</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="chairstand" value="2" onchange="updateProgress()">
+                    <span><strong>Con dificultad</strong> - Puedo hacerlo pero me cuesta trabajo</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="chairstand" value="3" onchange="updateProgress()">
+                    <span><strong>Sin problemas</strong> - Lo hago normalmente sin dificultad</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="chairstand" value="4" onchange="updateProgress()">
+                    <span><strong>Muy fácil</strong> - Puedo hacerlo repetidamente sin cansarme</span>
+                </label>
+            </div>
 
-<!-- NUEVA PREGUNTA 5: SITUACIÓN PERSONAL -->
+            <!-- PREGUNTA 3 MEJORADA -->
+            <div class="question">
+                <h3>3. ¿Cómo evaluarías tu equilibrio actual?</h3>
+                <p style="color: #666; margin-bottom: 15px;">El equilibrio es fundamental para prevenir caídas</p>
+                <label class="option">
+                    <input type="radio" name="balance" value="1" onchange="updateProgress()">
+                    <span><strong>Inestable</strong> - Me preocupan las caídas, evito ciertos movimientos</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="balance" value="2" onchange="updateProgress()">
+                    <span><strong>Regular</strong> - A veces me siento inseguro/a al caminar</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="balance" value="3" onchange="updateProgress()">
+                    <span><strong>Bueno</strong> - Rara vez tengo problemas de equilibrio</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="balance" value="4" onchange="updateProgress()">
+                    <span><strong>Excelente</strong> - Me siento muy estable en todas mis actividades</span>
+                </label>
+            </div>
 
+            <!-- PREGUNTA 4 MEJORADA -->
+            <div class="question">
+                <h3>4. ¿Tienes alguna limitación física o condición médica?</h3>
+                <p style="color: #666; margin-bottom: 15px;">Esto nos ayuda a personalizar ejercicios seguros para ti</p>
+                <label class="option">
+                    <input type="radio" name="limitations" value="1" onchange="updateProgress()">
+                    <span><strong>Varias limitaciones</strong> - Tengo restricciones médicas importantes</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="limitations" value="2" onchange="updateProgress()">
+                    <span><strong>Algunas limitaciones</strong> - Debo tener cuidado con ciertos movimientos</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="limitations" value="3" onchange="updateProgress()">
+                    <span><strong>Muy pocas</strong> - Solo pequeñas molestias ocasionales</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="limitations" value="4" onchange="updateProgress()">
+                    <span><strong>Ninguna limitación</strong> - No tengo restricciones físicas significativas</span>
+                </label>
+            </div>
 
-</div>
-<!-- RESULTADOS SÚPER MEJORADOS -->
-<div class="card hidden" id="results">
-<div id="personalizedGreeting"></div>
-<div id="levelInfo"></div>
-<!-- SEMÁFORO DE SEGURIDAD -->
-<div class="safety-light">
-<h3>🚦 Tu Semáforo de Seguridad - Muy Importante</h3>
-<p style="font-size: 1.1rem;">Durante tus ejercicios, usa estas señales:</p>
-<div class="traffic-lights">
-<div class="light green" onclick="showLightInfo('green')">
-                        🟢<br/><small>Continúa</small>
-</div>
-<div class="light yellow" onclick="showLightInfo('yellow')">
-                        🟡<br/><small>Reduce</small>
-</div>
-<div class="light red" onclick="showLightInfo('red')">
-                        🔴<br/><small>Para</small>
-</div>
-</div>
-<!-- EXPLICACIONES SIEMPRE VISIBLES -->
-<div style="margin-top: 20px; background: white; padding: 20px; border-radius: 10px;">
-<h4 style="margin-bottom: 15px; color: #2d3748;">Qué significa cada color:</h4>
-<div style="margin-bottom: 12px;">
-<strong>🟢 VERDE (Continúa):</strong> Te sientes bien, sin dolor ni fatiga excesiva. ¡Sigue adelante!
+            <!-- NUEVA PREGUNTA 5: SITUACIÓN PERSONAL -->
+            <div class="question">
+                <h3>5. ¿Cuál describe mejor tu situación actual?</h3>
+                <p style="color: #666; margin-bottom: 15px;">Esto nos ayuda a personalizar los beneficios más importantes para ti</p>
+                <label class="option">
+                    <input type="radio" name="situation" value="independence" onchange="updateProgress()">
+                    <span><strong>Mantener mi independencia</strong> - Vivo solo/a y quiero seguir cuidándome</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="situation" value="family" onchange="updateProgress()">
+                    <span><strong>Seguir activo con mi familia</strong> - Quiero disfrutar más con hijos/nietos</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="situation" value="safety" onchange="updateProgress()">
+                    <span><strong>Sentirme más seguro</strong> - Me preocupa caerme o lastimarme</span>
+                </label>
+                <label class="option">
+                    <input type="radio" name="situation" value="energy" onchange="updateProgress()">
+                    <span><strong>Tener más energía</strong> - Me canso fácilmente en mis actividades diarias</span>
+                </label>
+            </div>
+            
+            <button class="btn" onclick="generateProgram()" style="line-height: 1.4;">
+                🎯 Crear Mi Programa Personalizado<br>
+                <span style="font-size: 1.1rem; font-weight: 500;">(y ver mis ejercicios ahora)</span>
+            </button>
+        </div>
+
+        <!-- RESULTADOS SÚPER MEJORADOS -->
+        <div class="card hidden" id="results">
+            <div id="personalizedGreeting"></div>
+            
+            <div id="levelInfo"></div>
+            
+            <!-- SEMÁFORO DE SEGURIDAD -->
+            <div class="safety-light">
+                <h3>🚦 Tu Semáforo de Seguridad - Muy Importante</h3>
+                <p style="font-size: 1.1rem;">Durante tus ejercicios, usa estas señales:</p>
+                <div class="traffic-lights">
+                    <div class="light green" onclick="showLightInfo('green')">
+                        🟢<br><small>Continúa</small>
                     </div>
-<div style="margin-bottom: 12px;">
-<strong>🟡 AMARILLO (Reduce):</strong> Sientes cansancio o leve molestia. Descansa más tiempo o haz menos repeticiones.
+                    <div class="light yellow" onclick="showLightInfo('yellow')">
+                        🟡<br><small>Reduce</small>
                     </div>
-<div style="margin-bottom: 12px;">
-<strong>🔴 ROJO (Para):</strong> Dolor, mareo, falta de aire o palpitaciones. Detente inmediatamente y consulta a tu médico si persiste.
+                    <div class="light red" onclick="showLightInfo('red')">
+                        🔴<br><small>Para</small>
                     </div>
-</div>
-<div id="lightMessage" style="margin-top: 15px; font-size: 1.1rem; font-weight: 500;">
+                </div>
+                
+                <!-- EXPLICACIONES SIEMPRE VISIBLES -->
+                <div style="margin-top: 20px; background: white; padding: 20px; border-radius: 10px;">
+                    <h4 style="margin-bottom: 15px; color: #2d3748;">Qué significa cada color:</h4>
+                    <div style="margin-bottom: 12px;">
+                        <strong>🟢 VERDE (Continúa):</strong> Te sientes bien, sin dolor ni fatiga excesiva. ¡Sigue adelante!
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <strong>🟡 AMARILLO (Reduce):</strong> Sientes cansancio o leve molestia. Descansa más tiempo o haz menos repeticiones.
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <strong>🔴 ROJO (Para):</strong> Dolor, mareo, falta de aire o palpitaciones. Detente inmediatamente y consulta a tu médico si persiste.
+                    </div>
+                </div>
+                
+                <div id="lightMessage" style="margin-top: 15px; font-size: 1.1rem; font-weight: 500;">
                     💡 Puede hacer clic en cualquier luz para recordar su significado
                 </div>
-</div>
-<div id="dailySchedule"></div>
-<div id="expectedResults"></div>
-<div class="safety-warning">
-<h3>⚠️ Seguridad Primero - Muy Importante</h3>
-<div class="safety-item">
-<span class="safety-icon">👨‍⚕️</span>
-<span>Consulta con tu médico antes de comenzar - especialmente si tienes condiciones cardíacas, artritis o diabetes</span>
-</div>
-<div class="safety-item">
-<span class="safety-icon">🛑</span>
-<span>Detente inmediatamente si sientes dolor, mareo, falta de aire o palpitaciones</span>
-</div>
-<div class="safety-item">
-<span class="safety-icon">🪑</span>
-<span>Mantén siempre una silla sólida o pared cerca para apoyo de emergencia</span>
-</div>
-<div class="safety-item">
-<span class="safety-icon">🐌</span>
-<span>Comienza despacio - es mejor hacer poco bien que mucho mal</span>
-</div>
-<div class="safety-item">
-<span class="safety-icon">💧</span>
-<span>Mantente hidratado y haz los ejercicios en un área despejada</span>
-</div>
-</div>
-<div id="exerciseProgram"></div>
-<!-- CRONÓMETRO VISUAL -->
-<div class="timer-section">
-<h3>⏱️ Tu Cronómetro Personal <span class="help-icon" data-tooltip="Use este cronómetro para medir sus descansos entre series de ejercicios. Presione un botón para iniciar la cuenta regresiva.">?</span></h3>
-<p>Para descansos entre series:</p>
-<div class="timer-display" id="timerDisplay">00:00</div>
-<div class="timer-controls">
-<button class="secondary-btn" onclick="startTimer(60)">1 Minuto</button>
-<button class="secondary-btn" onclick="startTimer(90)">90 Segundos</button>
-<button class="secondary-btn" onclick="startTimer(120)">2 Minutos</button>
-<button class="secondary-btn" onclick="stopTimer()">Parar</button>
-</div>
-<p style="font-size: 1rem; color: #2d3748; margin-top: 15px; text-align: center;">
+            </div>
+            
+            <div id="dailySchedule"></div>
+            
+            <div id="expectedResults"></div>
+            
+            <div class="safety-warning">
+                <h3>⚠️ Seguridad Primero - Muy Importante</h3>
+                <div class="safety-item">
+                    <span class="safety-icon">👨‍⚕️</span>
+                    <span>Consulta con tu médico antes de comenzar - especialmente si tienes condiciones cardíacas, artritis o diabetes</span>
+                </div>
+                <div class="safety-item">
+                    <span class="safety-icon">🛑</span>
+                    <span>Detente inmediatamente si sientes dolor, mareo, falta de aire o palpitaciones</span>
+                </div>
+                <div class="safety-item">
+                    <span class="safety-icon">🪑</span>
+                    <span>Mantén siempre una silla sólida o pared cerca para apoyo de emergencia</span>
+                </div>
+                <div class="safety-item">
+                    <span class="safety-icon">🐌</span>
+                    <span>Comienza despacio - es mejor hacer poco bien que mucho mal</span>
+                </div>
+                <div class="safety-item">
+                    <span class="safety-icon">💧</span>
+                    <span>Mantente hidratado y haz los ejercicios en un área despejada</span>
+                </div>
+            </div>
+
+            <div id="exerciseProgram"></div>
+            
+            <!-- CRONÓMETRO VISUAL -->
+            <div class="timer-section">
+                <h3>⏱️ Tu Cronómetro Personal <span class="help-icon" data-tooltip="Use este cronómetro para medir sus descansos entre series de ejercicios. Presione un botón para iniciar la cuenta regresiva.">?</span></h3>
+                <p>Para descansos entre series:</p>
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                <div class="timer-controls">
+                    <button class="secondary-btn" onclick="startTimer(60)">1 Minuto</button>
+                    <button class="secondary-btn" onclick="startTimer(90)">90 Segundos</button>
+                    <button class="secondary-btn" onclick="startTimer(120)">2 Minutos</button>
+                    <button class="secondary-btn" onclick="stopTimer()">Parar</button>
+                </div>
+                <p style="font-size: 1rem; color: #2d3748; margin-top: 15px; text-align: center;">
                     💡 <strong>Cómo usar:</strong> Presione "1 Minuto" después de cada serie de ejercicios. Cuando suene la alarma, puede continuar con la siguiente serie.
                 </p>
-</div>
-<!-- LISTA DE VERIFICACIÓN -->
-<div class="checklist">
-<h3>✅ Marque aquí sus logros de hoy</h3>
-<p style="font-size: 1.1rem; margin-bottom: 20px; color: #2d3748;">
+            </div>
+            
+            <!-- LISTA DE VERIFICACIÓN -->
+            <div class="checklist">
+                <h3>✅ Marque aquí sus logros de hoy</h3>
+                <p style="font-size: 1.1rem; margin-bottom: 20px; color: #2d3748;">
                     💡 <strong>Instrucción:</strong> Haga clic en la casilla para marcar como completado
                 </p>
-<div class="check-item">
-<input id="check1" type="checkbox"/>
-<label for="check1">Hice mis ejercicios de fuerza (15 minutos)</label>
-</div>
-<div class="check-item">
-<input id="check2" type="checkbox"/>
-<label for="check2">Hice mis ejercicios de equilibrio (10 minutos)</label>
-</div>
-<div class="check-item">
-<input id="check3" type="checkbox"/>
-<label for="check3">Me sentí bien durante los ejercicios</label>
-</div>
-<div class="check-item">
-<input id="check4" type="checkbox"/>
-<label for="check4">Bebí suficiente agua</label>
-</div>
-<p style="font-size: 1rem; color: #38a169; font-weight: 600; margin-top: 15px; text-align: center;">
+                <div class="check-item">
+                    <input type="checkbox" id="check1">
+                    <label for="check1">Hice mis ejercicios de fuerza (15 minutos)</label>
+                </div>
+                <div class="check-item">
+                    <input type="checkbox" id="check2">
+                    <label for="check2">Hice mis ejercicios de equilibrio (10 minutos)</label>
+                </div>
+                <div class="check-item">
+                    <input type="checkbox" id="check3">
+                    <label for="check3">Me sentí bien durante los ejercicios</label>
+                </div>
+                <div class="check-item">
+                    <input type="checkbox" id="check4">
+                    <label for="check4">Bebí suficiente agua</label>
+                </div>
+                <p style="font-size: 1rem; color: #38a169; font-weight: 600; margin-top: 15px; text-align: center;">
                     🌟 ¡Cada marca es un paso hacia una mejor salud!
                 </p>
-</div>
-<div id="personalizedTips"></div>
-<!-- BOTÓN IMPRIMIR MEJORADO -->
-<div style="text-align: center; margin: 30px 0; background: #f8f9fa; padding: 25px; border-radius: 15px; border: 2px solid #38a169;">
-<h3 style="color: #2d3748; margin-bottom: 15px;">📄 Para tener siempre a mano</h3>
-<button class="secondary-btn" onclick="printRoutine()" style="font-size: 1.3rem; padding: 20px 40px; background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);">
+            </div>
+            
+            <div id="personalizedTips"></div>
+            
+            <!-- BOTÓN IMPRIMIR MEJORADO -->
+            <div style="text-align: center; margin: 30px 0; background: #f8f9fa; padding: 25px; border-radius: 15px; border: 2px solid #38a169;">
+                <h3 style="color: #2d3748; margin-bottom: 15px;">📄 Para tener siempre a mano</h3>
+                <button class="secondary-btn" onclick="printRoutine()" style="font-size: 1.3rem; padding: 20px 40px; background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);">
                     🖨️ Imprimir mi rutina en papel
                 </button>
-<p style="font-size: 1rem; color: #666; margin-top: 15px; font-weight: 500;">
-                    Imprime tu programa personalizado para pegarlo en la refrigeradora<br/>
+                <p style="font-size: 1rem; color: #666; margin-top: 15px; font-weight: 500;">
+                    Imprime tu programa personalizado para pegarlo en la refrigeradora<br>
                     o tenerlo siempre visible en tu área de ejercicios
                 </p>
-</div>
-<!-- SECCIÓN CANAL DE YOUTUBE -->
-<div class="youtube-section">
-<h3>🎥 ¿Te gustó esta guía personalizada?</h3>
-<p style="font-size: 1.2rem;"><strong>¡Hola! Soy Adrián Galván, creador de esta herramienta gratuita.</strong></p>
-<p style="font-size: 1.1rem;">Si esta guía te ha sido útil, me encantaría que visitaras mi canal de YouTube donde comparto más contenido científico sobre longevidad, salud y bienestar para adultos mayores.</p>
-<p style="font-size: 1.1rem;"><strong>📺 Canal:</strong> Ciencia Y Enigmas: Secretos de Longevidad</p>
-<p style="margin: 20px 0;">✨ Suscríbete y descubre más secretos respaldados por la ciencia para vivir mejor y más tiempo ✨</p>
-<a class="youtube-btn" href="https://www.youtube.com/channel/UCg-i-1Q45RQ13N6If4ObM4Q" target="_blank">
+            </div>
+            
+            <!-- SECCIÓN CANAL DE YOUTUBE -->
+            <div class="youtube-section">
+                <h3>🎥 ¿Te gustó esta guía personalizada?</h3>
+                <p style="font-size: 1.2rem;"><strong>¡Hola! Soy Adrián Galván, creador de esta herramienta gratuita.</strong></p>
+                <p style="font-size: 1.1rem;">Si esta guía te ha sido útil, me encantaría que visitaras mi canal de YouTube donde comparto más contenido científico sobre longevidad, salud y bienestar para adultos mayores.</p>
+                <p style="font-size: 1.1rem;"><strong>📺 Canal:</strong> Ciencia Y Enigmas: Secretos de Longevidad</p>
+                <p style="margin: 20px 0;">✨ Suscríbete y descubre más secretos respaldados por la ciencia para vivir mejor y más tiempo ✨</p>
+                <a href="https://www.youtube.com/channel/UCg-i-1Q45RQ13N6If4ObM4Q" target="_blank" class="youtube-btn">
                     🔔 Suscribirse al Canal
                 </a>
-<p style="font-size: 0.95rem; margin-top: 15px; color: #666;">Tu apoyo me ayuda a seguir creando contenido gratuito y de calidad para nuestra comunidad</p>
-</div>
-<button class="btn" onclick="restart()">🔄 Hacer Nueva Evaluación</button>
-<!-- MENSAJE FINAL MOTIVADOR -->
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 20px; text-align: center; margin: 30px 0; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);">
-<h2 style="color: white; font-size: 2.2rem; margin-bottom: 20px;">🌟 ¡Recuerde siempre!</h2>
-<p style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px;">
+                <p style="font-size: 0.95rem; margin-top: 15px; color: #666;">Tu apoyo me ayuda a seguir creando contenido gratuito y de calidad para nuestra comunidad</p>
+            </div>
+            
+            <button class="btn" onclick="restart()">🔄 Hacer Nueva Evaluación</button>
+            
+            <!-- MENSAJE FINAL MOTIVADOR -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 20px; text-align: center; margin: 30px 0; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);">
+                <h2 style="color: white; font-size: 2.2rem; margin-bottom: 20px;">🌟 ¡Recuerde siempre!</h2>
+                <p style="font-size: 1.4rem; font-weight: 600; margin-bottom: 15px;">
                     Solo 15 minutos al día pueden cambiar su calidad de vida
                 </p>
-<p style="font-size: 1.2rem; font-weight: 500; line-height: 1.6;">
-                    Cada repetición que hace es una inversión en su independencia,<br/>
+                <p style="font-size: 1.2rem; font-weight: 500; line-height: 1.6;">
+                    Cada repetición que hace es una inversión en su independencia,<br>
                     en más tiempo con su familia, y en muchos años de vida plena y activa.
                 </p>
-<p style="font-size: 1.3rem; font-weight: 700; margin-top: 20px;">
+                <p style="font-size: 1.3rem; font-weight: 700; margin-top: 20px;">
                     💪 ¡Usted puede hacerlo! ¡Su cuerpo se lo agradecerá!
                 </p>
-</div>
-</div>
-</div>
-<script>
+            </div>
+        </div>
+    </div>
+
+    <script>
         let userName = '';
         let timerInterval;
         let isLargeText = false;
@@ -2374,6 +2343,8 @@ input[type="text"].name-input:focus{ background-color:#fff; }
             document.getElementById('assessment').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
+
+
 <script>
 // Robust runtime injection for "Caminar en Línea con Apoyo"
 (function(){
@@ -2433,6 +2404,9 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   }
 })();
 </script>
+    
+
+
 <script>
 (function(){
   const ctr = document.getElementById('controls');
@@ -2475,7 +2449,9 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   scheduleHide();
 })();
 </script>
-<button aria-label="Volver arriba" id="toTop">↑</button>
+
+<button id="toTop" aria-label="Volver arriba">↑</button>
+
 <script>
 (function(){
   const toTop = document.getElementById('toTop');
@@ -2556,171 +2532,7 @@ input[type="text"].name-input:focus{ background-color:#fff; }
     window.restart = function(){ location.reload(); };
   }
 })();
-
-// ===== Wizard paso a paso (auto-avance + sin scroll) =====
-(function(){
-  const stepper   = document.getElementById('stepper');
-  if(!stepper) return;
-  const steps     = Array.from(stepper.querySelectorAll('.step'));
-  const progressFill = document.getElementById('progressFill');
-  const progressText = document.getElementById('progressText');
-  let current = 0;
-
-  function showStep(i, focusFirst=true){
-    steps[current].classList.remove('active');
-    current = Math.max(0, Math.min(i, steps.length-1));
-    steps[current].classList.add('active');
-
-    const pct = ((current+1)/steps.length)*100;
-    if(progressFill) progressFill.style.width = pct + '%';
-    if(progressText) progressText.textContent = 'Progreso: ' + (current+1) + ' de ' + steps.length + ' preguntas completadas';
-
-    if (focusFirst) {
-      const firstRadio = steps[current].querySelector('input[type="radio"]');
-      if (firstRadio) firstRadio.focus({preventScroll:true});
-    }
-    updateNavState();
-  }
-
-  function updateNavState(){
-    const prevBtn = steps[current].querySelector('[data-prev]');
-    if (prevBtn) prevBtn.disabled = (current===0);
-  }
-
-  stepper.addEventListener('click', (e)=>{
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    if (btn.hasAttribute('data-next')) showStep(current+1);
-    if (btn.hasAttribute('data-prev')) showStep(current-1);
-  });
-
-  stepper.addEventListener('change', (e)=>{
-    if (e.target.matches('input[type="radio"]')) {
-      setTimeout(()=> { if (current < steps.length-1) showStep(current+1); }, 260);
-    }
-  });
-
-  // expone por si se quiere usar desde consola
-  window.__wizardShowStep = showStep;
-  // Inicia
-  showStep(0, false);
-})();
-
-// ===== Wizard: dots, keyboard navigation, smoother transitions =====
-(function(){
-  const stepper = document.getElementById('stepper');
-  if(!stepper) return;
-  const steps = Array.from(stepper.querySelectorAll('.step'));
-  const dotsBox = document.getElementById('stepDots');
-  const progressFill = document.getElementById('progressFill');
-  const progressText = document.getElementById('progressText');
-  let current = steps.findIndex(s => s.classList.contains('active'));
-  if(current < 0) current = 0;
-
-  // Build dots
-  dotsBox.innerHTML = '';
-  steps.forEach((_, i) => {
-    const b = document.createElement('button');
-    b.className = 'dot' + (i===current ? ' active' : '');
-    b.type = 'button';
-    b.setAttribute('aria-label', 'Ir al paso ' + (i+1));
-    b.dataset.goto = String(i);
-    dotsBox.appendChild(b);
-  });
-
-  function updateDots(){
-    const answeredUpTo = getAnsweredCount();
-    dotsBox.querySelectorAll('.dot').forEach((d, i) => {
-      d.classList.toggle('active', i === current);
-      d.classList.toggle('completed', i < answeredUpTo);
-    });
-  }
-
-  function getAnsweredCount(){
-    // Count steps with a checked radio inside (simple heuristic)
-    let count = 0;
-    steps.forEach(s => { if(s.querySelector('input[type="radio"]:checked')) count++; });
-    return count;
-  }
-
-  function animateSwitch(prev, next){
-    if(prev === next) return;
-    // leave prev gracefully
-    prev.classList.add('leaving');
-    next.classList.add('active'); // will fade in
-    // after transition, clean prev
-    setTimeout(() => { prev.classList.remove('leaving'); prev.classList.remove('active'); }, 280);
-  }
-
-  function showStep(i, focusFirst=true){
-    i = Math.max(0, Math.min(i, steps.length-1));
-    const prev = steps[current];
-    const next = steps[i];
-    if(prev !== next){
-      animateSwitch(prev, next);
-      current = i;
-    }
-    const pct = ((current+1)/steps.length)*100;
-    if(progressFill) progressFill.style.width = pct + '%';
-    if(progressText) progressText.textContent = 'Progreso: ' + (current+1) + ' de ' + steps.length + ' preguntas completadas';
-    updateDots();
-    if (focusFirst) {
-      const firstRadio = next.querySelector('input[type="radio"]');
-      if (firstRadio) firstRadio.focus({preventScroll:true});
-    }
-  }
-
-  // Click dots
-  dotsBox.addEventListener('click', (e)=>{
-    const btn = e.target.closest('.dot');
-    if(!btn) return;
-    const to = parseInt(btn.dataset.goto || '0', 10);
-    showStep(to);
-  });
-
-  // Delegation: nav buttons
-  stepper.addEventListener('click', (e)=>{
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    if (btn.hasAttribute('data-next')) showStep(current+1);
-    if (btn.hasAttribute('data-prev')) showStep(current-1);
-  });
-
-  // Auto-advance on answer
-  stepper.addEventListener('change', (e)=>{
-    if (e.target.matches('input[type="radio"]')) {
-      setTimeout(()=> { if (current < steps.length-1) showStep(current+1); updateDots(); }, 260);
-    }
-  });
-
-  // Keyboard navigation inside current step
-  stepper.addEventListener('keydown', (e)=>{
-    const radios = Array.from(steps[current].querySelectorAll('input[type="radio"]'));
-    if(radios.length === 0) return;
-    const checkedIndex = radios.findIndex(r => r.checked);
-    if(e.key === 'ArrowDown' || e.key === 'ArrowRight'){
-      e.preventDefault();
-      const next = radios[Math.min(radios.length-1, Math.max(0, checkedIndex + 1))] || radios[0];
-      next.checked = true; next.focus({preventScroll:true});
-      stepper.dispatchEvent(new Event('change', {bubbles:true}));
-    }else if(e.key === 'ArrowUp' || e.key === 'ArrowLeft'){
-      e.preventDefault();
-      const prev = radios[Math.max(0, (checkedIndex === -1 ? radios.length-1 : checkedIndex - 1))];
-      prev.checked = true; prev.focus({preventScroll:true});
-      stepper.dispatchEvent(new Event('change', {bubbles:true}));
-    }else if(e.key === 'Enter'){
-      e.preventDefault();
-      if (current < steps.length-1) showStep(current+1);
-      else {
-        const finalBtn = document.getElementById('finalBtn') || stepper.querySelector('.btn[onclick*="generateProgram"]');
-        if(finalBtn) finalBtn.click();
-      }
-    }
-  });
-
-  // Initial sync
-  updateDots();
-})();
 </script>
+
 </body>
 </html>
