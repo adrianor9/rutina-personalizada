@@ -1346,6 +1346,15 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   .option{ will-change: transform; }
 }
 
+
+
+/* === Flow control button below name input === */
+#goToAssessmentBtn{
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  font-weight: 700;
+  border-radius: 10px;
+}
+#goToAssessmentBtn:focus-visible{ outline:none; box-shadow: 0 0 0 3px rgba(16,185,129,.25); }
 </style>
 </head>
 <body>
@@ -1388,7 +1397,7 @@ input[type="text"].name-input:focus{ background-color:#fff; }
                         🔍 Aumentar tamaño de letra para leer más fácil
                     </button>
 </div>
-</div>
+<button class="secondary-btn" id="goToAssessmentBtn" style="margin-top:14px; width:100%; max-width:360px;" type="button">➡️ Continuar a la evaluación</button></div>
 </div>
 <!-- EVALUACIÓN MEJORADA -->
 <div class="card" id="assessment">
@@ -1405,7 +1414,7 @@ input[type="text"].name-input:focus{ background-color:#fff; }
 </div>
 <!-- PREGUNTA 1 MEJORADA -->
 <div class="stepper" id="stepper">
-  <div class="step-dots" id="stepDots" aria-label="Progreso"></div><section class="step active" data-step="1"><div class="question">
+<div aria-label="Progreso" class="step-dots" id="stepDots"></div><section class="step active" data-step="1"><div class="question">
 <h3>1. ¿Cómo describirías tu nivel actual de actividad física?</h3>
 <p style="color: #666; margin-bottom: 15px;">Esta información nos ayuda a ajustar la intensidad de tus ejercicios</p>
 <label class="option">
@@ -1502,14 +1511,9 @@ input[type="text"].name-input:focus{ background-color:#fff; }
 </label>
 </div><div class="step-nav"><button class="secondary-btn" data-prev="">Anterior</button><button class="btn" onclick="generateProgram()" style="line-height:1.4;">🎯 Crear Mi Programa Personalizado<br/><span style="font-size: 1.1rem; font-weight: 500;">(y ver mis ejercicios ahora)</span></button></div><div class="step-counter">Paso 5 de 5</div></section></div>
 <!-- PREGUNTA 2 MEJORADA -->
-
 <!-- PREGUNTA 3 MEJORADA -->
-
 <!-- PREGUNTA 4 MEJORADA -->
-
 <!-- NUEVA PREGUNTA 5: SITUACIÓN PERSONAL -->
-
-
 </div>
 <!-- RESULTADOS SÚPER MEJORADOS -->
 <div class="card hidden" id="results">
@@ -2735,59 +2739,55 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   updateDots();
 })();
 
-// ===== Mobile flow fixes: jump to assessment after name & stabilize viewport =====
+
+// ===== Mobile flow fixes (v2): explicit jump via button or Enter; no forced auto-scroll on blur =====
 (function(){
-  const nameInput = document.getElementById('userName');
-  const assessment = document.getElementById('assessment');
-  const stepper = document.getElementById('stepper');
+  const nameInput   = document.getElementById('userName');
+  const goBtn       = document.getElementById('goToAssessmentBtn');
+  const assessment  = document.getElementById('assessment');
+  const stepper     = document.getElementById('stepper');
   if(!assessment || !stepper) return;
 
-  // Helper: smooth scroll to assessment top (with slight delay if keyboard just closed)
   function goToAssessment(){
-    // Try to wait a tick so iOS keyboard cierre no sacuda el scroll
+    // Only run if user has typed something
+    if(!nameInput || !nameInput.value.trim()) return;
+    // Smooth center the assessment start, then focus the first radio without moving scroll
+    assessment.scrollIntoView({behavior:'smooth', block:'start'});
     setTimeout(()=>{
-      assessment.scrollIntoView({behavior:'smooth', block:'start'});
-      // focus first option for accesibilidad
       const firstRadio = stepper.querySelector('.step.active input[type="radio"]') || stepper.querySelector('input[type="radio"]');
-      if(firstRadio){ firstRadio.focus({preventScroll:true}); }
-    }, 120);
+      if(firstRadio) firstRadio.focus({preventScroll:true});
+    }, 220);
+  }
+
+  if(goBtn){
+    goBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      goToAssessment();
+    });
   }
 
   if(nameInput){
-    // When pressing Enter
+    // Allow Enter to continue (but do NOT auto-jump on blur)
     nameInput.addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter' && nameInput.value.trim().length > 0){
+      if(e.key === 'Enter'){
         e.preventDefault();
         goToAssessment();
       }
     });
-    // When leaving the field the first time with content
-    let jumped = false;
-    nameInput.addEventListener('blur', ()=>{
-      if(!jumped && nameInput.value.trim().length > 0){
-        jumped = true;
-        goToAssessment();
-      }
-    });
   }
 
-  // Viewport stabilizer: keep the assessment card anchored while steps change
+  // Keep the rest: viewport stabilizer during step changes on small screens
   const vv = window.visualViewport;
   let lockY = null;
-  function lockScroll(){
-    lockY = window.scrollY;
-  }
+  function lockScroll(){ lockY = window.scrollY; }
   function restoreScroll(){
     if(lockY !== null){
-      // Use requestAnimationFrame dos veces para esperar al reflow/paint
       requestAnimationFrame(()=> requestAnimationFrame(()=>{
         window.scrollTo({top: lockY, behavior: 'instant'});
         lockY = null;
       }));
     }
   }
-
-  // Pin scroll around step changes & radio taps (only on small screens)
   const isSmall = () => window.matchMedia('(max-width: 520px)').matches;
 
   document.addEventListener('click', (e)=>{
@@ -2806,21 +2806,17 @@ input[type="text"].name-input:focus{ background-color:#fff; }
     }
   });
 
-  // When visualViewport resizes (keyboard), try to keep assessment in place
   if(vv){
-    let lastHeight = vv.height;
     vv.addEventListener('resize', ()=>{
       if(!isSmall()) return;
-      // If keyboard opened/closed, prefer locking to assessment top area
+      // Do not force-anchoring on resize; let the user decide while typing
+      // Only adjust if the assessment is already in view but got nudged off markedly
       const rect = assessment.getBoundingClientRect();
-      // Keep top margin visible
-      if(rect.top < 0 || rect.top > 20){
-        assessment.scrollIntoView({behavior:'instant', block:'start'});
-      }
-      lastHeight = vv.height;
+      if(rect.top < -40){ assessment.scrollIntoView({behavior:'instant', block:'start'}); }
     });
   }
 })();
+
 </script>
 </body>
 </html>
