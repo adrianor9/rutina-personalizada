@@ -901,7 +901,67 @@
                 margin-bottom: 20px;
             }
         }
-    </style>
+    
+/* === Mobile & Large Text Polishing === */
+:root { --stepNum: 36px; }
+
+/* Numbers inside steps */
+.step-number{
+  width: var(--stepNum);
+  height: var(--stepNum);
+  min-width: var(--stepNum);
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+/* Make step layout grid so text doesn't get pushed oddly */
+.step{
+  display: grid;
+  grid-template-columns: var(--stepNum) 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+/* Improve text flow on small screens */
+.step > div{
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+/* More comfortable paddings on small screens */
+@media (max-width: 480px){
+  .exercise-card{ padding: 16px; }
+  .step{ padding: 12px; border-radius: 12px; }
+  .step-number{ font-size: 16px; }
+  .exercise-image{ max-width: 160px; }
+}
+
+/* Super small screens */
+@media (max-width: 360px){
+  :root{ --stepNum: 32px; }
+  .exercise-image{ max-width: 140px; }
+}
+
+/* When user activates big text mode (if body gets .large-text) */
+body.large-text{
+  --stepNum: 40px;
+}
+body.large-text .step-number{ font-size: 18px; }
+body.large-text .step > div{ line-height: 1.6; }
+
+/* Floating controls: keep clear of notches/status bars */
+.controls{
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  right: calc(env(safe-area-inset-right, 0px) + 12px);
+  z-index: 1000;
+}
+.control-btn{ box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+
+</style>
 </head>
 <body>
     <div class="container">
@@ -1280,6 +1340,7 @@
 
         // FUNCIONES DE CONTROL
         function toggleLargeText() {
+  try{ document.body.classList.toggle('large-text'); }catch(e){}
             isLargeText = !isLargeText;
             if (isLargeText) {
                 document.body.classList.add('large-text');
