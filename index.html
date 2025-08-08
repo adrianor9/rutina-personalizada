@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programa Personalizado de Ejercicio para Adultos Mayores - M.C Adrián G.</title>
+    <title>Programa Personalizado de Ejercicio para Adultos Mayores - Adrián Galván</title>
     <style>
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -1166,6 +1166,37 @@ body.large-text .step .step-number{
     padding: 12px !important;
     border-radius: 8px !important;
   }
+}
+
+
+/* ==== UX polish: Traffic light labels below circles, accessible contrast ==== */
+.traffic-lights{
+  gap: 28px !important;
+}
+.traffic-lights .light{
+  position: relative;
+  width: 88px; height: 88px;
+  display: grid; place-items: center;
+  color: transparent !important;           /* hide any inline text */
+}
+.traffic-lights .light-label{
+  margin-top: 8px;
+  font-weight: 700;
+  text-align: center;
+  font-size: 1.05rem;
+  color: #1f2937;                          /* slate-800 */
+}
+/* Better on small phones */
+@media (max-width: 520px){
+  .traffic-lights{ gap: 18px !important; }
+  .traffic-lights .light{ width: 72px; height: 72px; }
+  .traffic-lights .light-label{ font-size: 1rem; }
+}
+/* Focus/hover ring for accessibility */
+.traffic-lights .light:focus-visible,
+.traffic-lights .light:hover{
+  outline: 4px solid rgba(0,0,0,.1);
+  outline-offset: 4px;
 }
 
 </style>
@@ -2362,6 +2393,54 @@ body.large-text .step .step-number{
     else { toTop.style.display = 'none'; }
   }, {passive:true});
   toTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+})();
+
+// Build clearer labels under each traffic light
+(function(){
+  const box = document.querySelector('.traffic-lights');
+  if(!box) return;
+  const items = Array.from(box.querySelectorAll('.light'));
+  items.forEach(el => {
+    const labelText = (el.textContent || '').replace(/\s+/g,' ').trim();
+    el.textContent = ''; // remove text inside the circle
+    const cap = document.createElement('div');
+    cap.className = 'light-label';
+    cap.textContent = labelText || (el.classList.contains('green') ? 'Continúa' :
+                                    el.classList.contains('yellow') ? 'Reduce' :
+                                    el.classList.contains('red') ? 'Para' : '');
+    // Wrap circle + label in a figure for consistent stacking
+    const wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    wrap.style.flexDirection = 'column';
+    wrap.style.alignItems = 'center';
+    el.parentNode.insertBefore(wrap, el);
+    wrap.appendChild(el);
+    wrap.appendChild(cap);
+  });
+})();
+
+// Preserve scroll position when toggling large text
+(function(){
+  const original = window.toggleLargeText;
+  window.toggleLargeText = function(){
+    const nearest = document.elementFromPoint(window.innerWidth/2, window.innerHeight/3);
+    const anchor = nearest && nearest.closest('.card, .exercise-card, section, div');
+    const rectBefore = anchor ? anchor.getBoundingClientRect() : null;
+    const topBefore = window.scrollY + (rectBefore ? rectBefore.top : 0);
+    // call original
+    if (typeof original === 'function') original(); else document.body.classList.toggle('large-text');
+    // after styles apply, re-align to keep the same anchor position on screen
+    requestAnimationFrame(() => {
+      if(rectBefore){
+        const rectAfter = anchor.getBoundingClientRect();
+        const delta = rectAfter.top - rectBefore.top;
+        window.scrollTo({top: window.scrollY + delta, behavior: 'instant'});
+      }else{
+        // fallback: restore previous scroll
+        window.scrollTo({top: topBefore, behavior: 'instant'});
+      }
+    });
+  };
 })();
 </script>
 
