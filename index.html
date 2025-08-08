@@ -1057,60 +1057,8 @@ body.large-text .step .step-number{
   box-shadow: 0 8px 18px rgba(0,0,0,.2); z-index: 999;
 }
 
-
-
-
-
-/* Use variables */
-body{ background: var(--bg); color: var(--ink); }
-h1,h2,h3,h4,h5,h6{ color: var(--ink); }
-.exercise-card{ background: var(--card); }
-.benefit-tag{ background: var(--chip); color: var(--chip-ink); }
-.personalized-tips{ background: var(--tip-bg) !important; color: var(--tip-ink); border-left: 6px solid var(--tip-border) !important; }
-.safety-warning{ background: var(--warn-bg) !important; color: var(--warn-ink); border-left: 6px solid var(--warn-border) !important; }
-.safety-light{ background: var(--info-bg) !important; color: var(--info-ink); border-left: 6px solid var(--info-border) !important; }
-
-
-/* ===== Mobile full-width + font stability (v17) ===== */
-@media (max-width: 520px){
-  .container{ max-width:100%; margin:0; padding:0 8px; }
-  .exercise-card{ margin-left:0; margin-right:0; border-radius:16px; padding:14px; }
-  /* Make colored sections edge-to-edge with safe padding */
-  .personalized-tips, .safety-warning, .safety-light{ margin-left: -4px; margin-right: -4px; padding: 14px 12px; border-radius:12px; }
-  /* Ensure fonts don't shrink weirdly */
-  .exercise-details .step-by-step .step{ font-size: 1rem; }
-  body.large-text .exercise-details .step-by-step .step{ font-size: 1.15rem; }
-  /* Number badge very compact */
-  .step .step-number{ width:26px; height:26px; font-size:.9rem; border-radius:8px; }
-  .benefit-container, .tags, .chips{ gap:6px; }
-}
-
-
-/* Desktop readability fix: ensure themed blocks use variables */
-.scientific-credentials{
-  background: var(--info-bg);
-  color: var(--info-ink);
-  border-left: 6px solid var(--info-border);
-  border-radius: 14px;
-  padding: 14px;
-}
-.info-card{ background: var(--card); color: var(--ink); }
-
 </style>
-<style>
-@media (max-width: 768px) {
-    body, .container, .card, .section, .content {
-        margin: 0 !important;
-        padding-left: 4px !important;
-        padding-right: 4px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-    .card {
-        border-radius: 0 !important;
-    }
-}
-</style></head>
+</head>
 <body>
     <div class="container">
         <!-- CONTROLES FLOTANTES -->
@@ -2303,25 +2251,6 @@ h1,h2,h3,h4,h5,h6{ color: var(--ink); }
     else { toTop.style.display = 'none'; }
   }, {passive:true});
   toTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
-})();
-</script>
-
-
-<script>
-(function(){
-  const key = 'prefers-dark-mode-manual';
-  const btn = document.getElementById('toggleDark');
-  if (!btn) return;
-  // Load preference
-  const saved = localStorage.getItem(key);
-  if (saved === '1') document.body.classList.add('dark-mode');
-  const updateLabel = () => btn.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo claro' : '🌙 Modo oscuro';
-  updateLabel();
-  btn.addEventListener('click', ()=>{
-    document.body.classList.toggle('dark-mode');
-    localStorage.setItem(key, document.body.classList.contains('dark-mode') ? '1' : '0');
-    updateLabel();
-  });
 })();
 </script>
 
