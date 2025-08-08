@@ -1355,6 +1355,19 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   border-radius: 10px;
 }
 #goToAssessmentBtn:focus-visible{ outline:none; box-shadow: 0 0 0 3px rgba(16,185,129,.25); }
+
+
+/* ===== Premium flow polish ===== */
+.highlight-flash{
+  animation: flashBorder 900ms ease-out;
+}
+@keyframes flashBorder{
+  0%{ box-shadow: 0 0 0 0 rgba(99,102,241,.35); }
+  50%{ box-shadow: 0 0 0 6px rgba(99,102,241,.18); }
+  100%{ box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+}
+/* keep center scroll nice on mobile/desktop */
+html{ scroll-behavior: smooth; }
 </style>
 </head>
 <body>
@@ -1413,7 +1426,7 @@ input[type="text"].name-input:focus{ background-color:#fff; }
 </div>
 </div>
 <!-- PREGUNTA 1 MEJORADA -->
-<div class="stepper" id="stepper">
+<div id="autoAdvanceWrap" style="display:flex;justify-content:center;align-items:center;gap:10px;margin:8px 0 12px;"><input checked="" id="autoAdvance" type="checkbox"/><label for="autoAdvance">Avance automático</label></div><div class="stepper" id="stepper">
 <div aria-label="Progreso" class="step-dots" id="stepDots"></div><section class="step active" data-step="1"><div class="question">
 <h3>1. ¿Cómo describirías tu nivel actual de actividad física?</h3>
 <p style="color: #666; margin-bottom: 15px;">Esta información nos ayuda a ajustar la intensidad de tus ejercicios</p>
@@ -2777,6 +2790,119 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   // No scroll locking here. We keep dots, wizard transitions, and everything else intact.
 })();
 
+
+
+
+// ===== Premium guided flow (v2): Intro-first — no jump until assessment is in view or user pulsa "Continuar" =====
+(function(){
+  const stepper    = document.getElementById('stepper');
+  const assessment = document.getElementById('assessment');
+  const autoChk    = document.getElementById('autoAdvance');
+  const goBtn      = document.getElementById('goToAssessmentBtn');
+  const nameInput  = document.getElementById('userName');
+  if(!stepper || !assessment) return;
+  const steps = Array.from(stepper.querySelectorAll('.step'));
+
+  // Activation: until true, we do not auto-center/auto-advance.
+  let activated = false;
+
+  function activate(){
+    if (activated) return;
+    activated = true;
+    // Optional: center current step a pelito después de activarse
+    setTimeout(centerCurrent, 120);
+  }
+
+  // Observe when assessment actually becomes visible (user scrolled)
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting && e.intersectionRatio > 0.5){
+          activate();
+        }
+      });
+    }, {threshold:[0.25,0.5,0.75]});
+    io.observe(assessment);
+  }
+
+  // If user clicks "Continuar a la evaluación" or presiona Enter en nombre -> activar y llevar
+  function goToAssessment(){
+    activate();
+    if(!nameInput || !nameInput.value.trim()){
+      // Si no hay nombre, igual permitimos ver preguntas, pero no auto-llenamos saludo
+    }
+    assessment.scrollIntoView({behavior:'smooth', block:'start'});
+    setTimeout(()=>{
+      const firstRadio = stepper.querySelector('.step.active input[type="radio"]') || stepper.querySelector('input[type="radio"]');
+      if(firstRadio) firstRadio.focus({preventScroll:true});
+    }, 220);
+  }
+  if(goBtn){
+    goBtn.addEventListener('click', (e)=>{ e.preventDefault(); goToAssessment(); });
+  }
+  if(nameInput){
+    nameInput.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){ e.preventDefault(); goToAssessment(); }
+    });
+  }
+
+  // Helper: center current step smoothly (only when activated)
+  function centerCurrent(){
+    if(!activated) return;
+    const active = steps.find(s=>s.classList.contains('active'));
+    if(!active) return;
+    active.scrollIntoView({behavior:'smooth', block:'center'});
+    active.classList.add('highlight-flash');
+    setTimeout(()=>active.classList.remove('highlight-flash'), 950);
+  }
+
+  // Hook: showStep from wizard if available, extend to center (only when activated)
+  const w = window;
+  const origShow = w.__wizardShowStep;
+  w.__wizardShowStep = function(i, focusFirst=true){
+    if(typeof origShow === 'function'){ origShow(i, focusFirst); }
+    if(activated){ setTimeout(centerCurrent, 40); }
+  };
+
+  // On answer, if auto-advance and activated, move to next; if last, auto-finish
+  stepper.addEventListener('change', (e)=>{
+    if(!e.target.matches('input[type="radio"]')) return;
+    const activeIndex = steps.findIndex(s=>s.classList.contains('active'));
+    const isLast = activeIndex === steps.length - 1;
+
+    // Siempre centramos suavemente la selección actual al menos
+    setTimeout(centerCurrent, 60);
+
+    if(!activated) return; // no auto-advance hasta que se activó (intro leída)
+    if(autoChk && !autoChk.checked) return;
+
+    if(!isLast){
+      setTimeout(()=> w.__wizardShowStep(activeIndex+1), 260);
+    }else{
+      const run = w.generateProgram;
+      if(typeof run === 'function') run();
+      setTimeout(()=>{
+        const results = document.getElementById('results');
+        if(results){
+          results.scrollIntoView({behavior:'smooth', block:'start'});
+          const h = results.querySelector('h2,h3,h4') || results;
+          h.classList.add('highlight-flash');
+          setTimeout(()=>h.classList.remove('highlight-flash'), 900);
+        }
+      }, 300);
+    }
+  });
+
+  // Manual next/prev should also center when activated
+  stepper.addEventListener('click', (e)=>{
+    if(e.target.closest('[data-next],[data-prev]')){
+      setTimeout(centerCurrent, 60);
+    }
+  });
+
+  // Importante: NO centramos nada en load para no saltarnos la introducción.
+  // El centrado y auto-avance arrancan sólo tras "activate()".
+})();
 
 </script>
 </body>
