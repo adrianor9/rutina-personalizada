@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programa Personalizado de Ejercicio para Adultos Mayores - Adrián Galván</title>
+    <title>Programa Personalizado de Ejercicio para Adultos Mayores - M.C.Adrián G.</title>
     <style>
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -1012,6 +1012,49 @@ body.large-text .exercise-image{ max-width: 180px; }
 /* Para accesibilidad: cuando el usuario activa “Letra Grande” (clase ya usada) */
 body.large-text .step .step-number{
   width: 30px; height: 30px; font-size: 1rem;
+}
+
+
+/* ===== Mobile Full-Width Polish (v16) ===== */
+@media (max-width: 520px){
+  /* Use full width on phones */
+  .container{ max-width: 100%; margin: 0; padding: 0 10px; }
+  /* Tip/advice blocks: edge-to-edge look, larger line-height */
+  .personalized-tips,
+  .safety-warning,
+  .safety-light{
+    margin-left: 0;
+    margin-right: 0;
+    padding: 14px;
+    border-radius: 12px;
+    line-height: 1.55;
+  }
+  /* Reduce left border thickness so it doesn't eat space */
+  .personalized-tips{ border-left-width: 4px; }
+  .safety-light{ border-left-width: 4px; }
+  /* Make lists inside tips breathe */
+  .personalized-tips li,
+  .safety-warning li{ margin-bottom: 6px; }
+  /* Step numbers: even more discreet */
+  .step .step-number{
+    width: 26px; height: 26px; font-size: .9rem; border-radius: 8px;
+    margin-top: 2px;
+  }
+  /* Headings spacing tighter */
+  h1,h2,h3{ line-height: 1.2; margin: 12px 0; }
+  /* Chips wrap better without overflow */
+  .benefit-container, .tags, .chips{ gap: 6px; }
+}
+/* Accessibility: respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+/* Back-to-top button */
+#toTop{
+  position: fixed; right: 12px; bottom: 80px; display: none;
+  width: 40px; height: 40px; border-radius: 9999px; border: none;
+  background: #4f46e5; color: #fff; font-size: 20px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.2); z-index: 999;
 }
 
 </style>
@@ -2194,6 +2237,20 @@ body.large-text .step .step-number{
   // Start collapsed and schedule hide
   collapse();
   scheduleHide();
+})();
+</script>
+
+<button id="toTop" aria-label="Volver arriba">↑</button>
+
+<script>
+(function(){
+  const toTop = document.getElementById('toTop');
+  const showY = 400;
+  window.addEventListener('scroll', ()=>{
+    if (window.scrollY > showY) { toTop.style.display = 'block'; }
+    else { toTop.style.display = 'none'; }
+  }, {passive:true});
+  toTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
 })();
 </script>
 
