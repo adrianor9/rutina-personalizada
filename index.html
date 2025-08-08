@@ -2740,7 +2740,8 @@ input[type="text"].name-input:focus{ background-color:#fff; }
 })();
 
 
-// ===== Mobile flow fixes (v2): explicit jump via button or Enter; no forced auto-scroll on blur =====
+
+// ===== Mobile flow fixes (v3): no lock/restore — respect native scroll entirely =====
 (function(){
   const nameInput   = document.getElementById('userName');
   const goBtn       = document.getElementById('goToAssessmentBtn');
@@ -2749,9 +2750,7 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   if(!assessment || !stepper) return;
 
   function goToAssessment(){
-    // Only run if user has typed something
     if(!nameInput || !nameInput.value.trim()) return;
-    // Smooth center the assessment start, then focus the first radio without moving scroll
     assessment.scrollIntoView({behavior:'smooth', block:'start'});
     setTimeout(()=>{
       const firstRadio = stepper.querySelector('.step.active input[type="radio"]') || stepper.querySelector('input[type="radio"]');
@@ -2767,7 +2766,6 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   }
 
   if(nameInput){
-    // Allow Enter to continue (but do NOT auto-jump on blur)
     nameInput.addEventListener('keydown', (e)=>{
       if(e.key === 'Enter'){
         e.preventDefault();
@@ -2776,46 +2774,9 @@ input[type="text"].name-input:focus{ background-color:#fff; }
     });
   }
 
-  // Keep the rest: viewport stabilizer during step changes on small screens
-  const vv = window.visualViewport;
-  let lockY = null;
-  function lockScroll(){ lockY = window.scrollY; }
-  function restoreScroll(){
-    if(lockY !== null){
-      requestAnimationFrame(()=> requestAnimationFrame(()=>{
-        window.scrollTo({top: lockY, behavior: 'instant'});
-        lockY = null;
-      }));
-    }
-  }
-  const isSmall = () => window.matchMedia('(max-width: 520px)').matches;
-
-  document.addEventListener('click', (e)=>{
-    if(!isSmall()) return;
-    if(e.target.closest('.option') || e.target.closest('[data-next],[data-prev]')){
-      lockScroll();
-      setTimeout(restoreScroll, 320);
-    }
-  }, {capture:true});
-
-  stepper.addEventListener('change', (e)=>{
-    if(!isSmall()) return;
-    if(e.target.matches('input[type="radio"]')){
-      lockScroll();
-      setTimeout(restoreScroll, 360);
-    }
-  });
-
-  if(vv){
-    vv.addEventListener('resize', ()=>{
-      if(!isSmall()) return;
-      // Do not force-anchoring on resize; let the user decide while typing
-      // Only adjust if the assessment is already in view but got nudged off markedly
-      const rect = assessment.getBoundingClientRect();
-      if(rect.top < -40){ assessment.scrollIntoView({behavior:'instant', block:'start'}); }
-    });
-  }
+  // No scroll locking here. We keep dots, wizard transitions, and everything else intact.
 })();
+
 
 </script>
 </body>
