@@ -1168,6 +1168,73 @@ h1,h2,h3,h4,h5,h6{ color: var(--ink); }
 /* Ensure the page never shows the old purple gradient frame */
 body{ background: var(--bg) !important; }
 
+
+/* ===== v19 Mobile centering & spacing; remove theme toggle ===== */
+#toggleDark{ display:none !important; }
+body.dark-mode{ background: var(--bg) !important; color: var(--text) !important; } /* neutralize */
+:root{
+  /* ensure a clean light theme */
+  --bg:#ffffff;
+  --text:#0f1a2b;
+}
+/* Universal text wrapping to avoid clipping on big text */
+*{ word-break: normal; overflow-wrap: anywhere; }
+input, textarea, button{ font: inherit; }
+
+/* Center and relax spacing on mobile */
+@media (max-width: 520px){
+  .center-mobile, .name-input-section, .welcome-section, .question,
+  .exercise-card, .scientific-credentials, .personalized-tips, .daily-schedule{
+    text-align: center !important;
+  }
+  .name-input-section input[type="text"],
+  .name-input-section input[type="search"],
+  .name-input-section .text-input,
+  input[type="text"], input[type="search"], textarea{
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 16px !important;
+    border-radius: 14px !important;
+    font-size: clamp(1rem, 4.6vw, 1.3rem) !important;
+    line-height: 1.25 !important;
+    box-sizing: border-box !important;
+    margin: 6px 0 12px 0 !important;
+  }
+  .btn, button{
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 14px 16px !important;
+    line-height: 1.25 !important;
+  }
+  /* Exercise blocks: more breathing room */
+  .exercise-card{
+    padding: 18px !important;
+    border-radius: 18px !important;
+  }
+  .exercise-card .howto, .exercise-card .step, .exercise-card .note,
+  .exercise-card .safety, .exercise-card .benefit{
+    margin: 14px 0 !important;
+  }
+  .exercise-card p, .exercise-card li{
+    line-height: 1.6 !important;
+    font-size: clamp(1rem, 4.2vw, 1.2rem) !important;
+  }
+  /* Icon/illustration block centered */
+  .exercise-card .icon, .exercise-card .illustration, .exercise-image, .exercise-icon{
+    display: block !important;
+    margin: 0 auto 10px auto !important;
+  }
+  /* Remove side accents that tighten the column */
+  .left-accent, .right-accent{ padding-left: 0 !important; padding-right: 0 !important; border-left: none !important; border-right: none !important; }
+  
+  /* Add a bit more outer gutter and remove the feel of a frame */
+  .container{ padding: 0 14px !important; }
+  
+  /* Floating controls: smaller and away from content */
+  .controls{ right: 10px !important; bottom: 20px !important; transform: none !important; }
+  .controls .fab{ width: 44px !important; height: 44px !important; }
+}
+
 </style>
 </head>
 <body>
@@ -2330,24 +2397,7 @@ body{ background: var(--bg) !important; }
   function collapse(){ ctr.classList.add('collapsed'); }
   fab.onclick = function(e){ e.stopPropagation(); ctr.classList.contains('collapsed') ? expand() : collapse(); };
 
-  // Dark mode toggle
-  const key = 'prefers-dark-mode-manual';
-  const btnDark = document.getElementById('toggleDark');
-  function updateLabel(){
-    if (!btnDark) return;
-    btnDark.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo claro' : '🌙 Modo oscuro';
-  }
-  if (btnDark){
-    const saved = localStorage.getItem(key);
-    if (saved === '1') document.body.classList.add('dark-mode');
-    updateLabel();
-    btnDark.addEventListener('click', function(){
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem(key, document.body.classList.contains('dark-mode') ? '1' : '0');
-      updateLabel();
-    });
-  }
-
+  //
   // Auto-hide behavior (desktop too)
   let hideTimer;
   function scheduleHide(){
@@ -2364,33 +2414,7 @@ body{ background: var(--bg) !important; }
 })();
 
 
-// ===== Theme (light/dark) handling with persistence =====
-const DARK_CLASS = 'dark-mode';
-const darkBtn = document.getElementById('toggleDark');
-
-function setDark(enabled){
-    document.body.classList.toggle(DARK_CLASS, !!enabled);
-    try{ localStorage.setItem('am_theme', enabled ? 'dark' : 'light'); }catch(e){}
-    if(darkBtn){
-        darkBtn.textContent = document.body.classList.contains(DARK_CLASS) ? '☀️ Modo claro' : '🌙 Modo oscuro';
-    }
-}
-
-// Initialize on load: prefer saved; else system preference
-(function initTheme(){
-    let saved = null;
-    try{ saved = localStorage.getItem('am_theme'); }catch(e){ saved = null; }
-    if(saved === 'dark'){ setDark(true); }
-    else if(saved === 'light'){ setDark(false); }
-    else{
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setDark(prefersDark);
-    }
-})();
-
-if(darkBtn){
-    darkBtn.addEventListener('click', () => setDark(!document.body.classList.contains(DARK_CLASS)));
-}
+    /* dark toggle removed */
 // Update label if system preference changes and no explicit choice was saved
 try{
     const media = window.matchMedia('(prefers-color-scheme: dark)');
