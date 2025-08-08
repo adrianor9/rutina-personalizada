@@ -2685,17 +2685,18 @@ document.addEventListener('DOMContentLoaded', function(){
   const welcome   = document.getElementById('welcomeMessage');
   const displayName = document.getElementById('displayName');
 
-  function showWelcome() {
-    const safeName = (nameInput.value || '').trim() || 'Estimado/a participante';
-    displayName.textContent = safeName;
-    if (welcome) {
-      welcome.style.display = 'block';
-      welcome.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    ensureGoToQ1Button();
+  function showWelcome(opts = {}) {
+  const { scroll = false } = opts;
+  const safeName = (nameInput.value || '').trim() || 'Estimado/a participante';
+  displayName.textContent = safeName;
+  if (welcome) {
+    welcome.style.display = 'block';
+    if (scroll) { welcome.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
   }
+  ensureGoToQ1Button();
+}
 
-  nameInput.addEventListener('input', showWelcome);
+  nameInput.addEventListener('input', () => showWelcome({scroll:false}));
 
   function ensureGoToQ1Button() {
     let goBtn = document.getElementById('goToQ1');
@@ -2717,8 +2718,8 @@ document.addEventListener('DOMContentLoaded', function(){
   if (nextBtn) {
     nextBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      showWelcome();
-    });
+      showWelcome({scroll:true});
+});
   }
 </script>
 
