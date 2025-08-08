@@ -1333,28 +1333,6 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   .step-dots .dot{ width: 11px; height: 11px; }
 }
 
-
-/* ===== Mobile flow stability ===== */
-@media (max-width: 520px){
-  /* Keep a consistent anchor area so el contenedor no "salta" */
-  #assessment{
-    scroll-margin-top: 12px;
-    min-height: 520px; /* ya existía, reforzamos */
-  }
-  /* Radios y opciones: evitar que ganar/ perder enfoque provoque reflujo raro */
-  .option input{ touch-action: manipulation; }
-  .option{ will-change: transform; }
-}
-
-
-
-/* === Flow control button below name input === */
-#goToAssessmentBtn{
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  font-weight: 700;
-  border-radius: 10px;
-}
-#goToAssessmentBtn:focus-visible{ outline:none; box-shadow: 0 0 0 3px rgba(16,185,129,.25); }
 </style>
 </head>
 <body>
@@ -1397,7 +1375,7 @@ input[type="text"].name-input:focus{ background-color:#fff; }
                         🔍 Aumentar tamaño de letra para leer más fácil
                     </button>
 </div>
-<button class="secondary-btn" id="goToAssessmentBtn" style="margin-top:14px; width:100%; max-width:360px;" type="button">➡️ Continuar a la evaluación</button></div>
+</div>
 </div>
 <!-- EVALUACIÓN MEJORADA -->
 <div class="card" id="assessment">
@@ -1414,7 +1392,7 @@ input[type="text"].name-input:focus{ background-color:#fff; }
 </div>
 <!-- PREGUNTA 1 MEJORADA -->
 <div class="stepper" id="stepper">
-<div aria-label="Progreso" class="step-dots" id="stepDots"></div><section class="step active" data-step="1"><div class="question">
+  <div class="step-dots" id="stepDots" aria-label="Progreso"></div><section class="step active" data-step="1"><div class="question">
 <h3>1. ¿Cómo describirías tu nivel actual de actividad física?</h3>
 <p style="color: #666; margin-bottom: 15px;">Esta información nos ayuda a ajustar la intensidad de tus ejercicios</p>
 <label class="option">
@@ -1511,9 +1489,14 @@ input[type="text"].name-input:focus{ background-color:#fff; }
 </label>
 </div><div class="step-nav"><button class="secondary-btn" data-prev="">Anterior</button><button class="btn" onclick="generateProgram()" style="line-height:1.4;">🎯 Crear Mi Programa Personalizado<br/><span style="font-size: 1.1rem; font-weight: 500;">(y ver mis ejercicios ahora)</span></button></div><div class="step-counter">Paso 5 de 5</div></section></div>
 <!-- PREGUNTA 2 MEJORADA -->
+
 <!-- PREGUNTA 3 MEJORADA -->
+
 <!-- PREGUNTA 4 MEJORADA -->
+
 <!-- NUEVA PREGUNTA 5: SITUACIÓN PERSONAL -->
+
+
 </div>
 <!-- RESULTADOS SÚPER MEJORADOS -->
 <div class="card hidden" id="results">
@@ -2738,85 +2721,6 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   // Initial sync
   updateDots();
 })();
-
-
-// ===== Mobile flow fixes (v2): explicit jump via button or Enter; no forced auto-scroll on blur =====
-(function(){
-  const nameInput   = document.getElementById('userName');
-  const goBtn       = document.getElementById('goToAssessmentBtn');
-  const assessment  = document.getElementById('assessment');
-  const stepper     = document.getElementById('stepper');
-  if(!assessment || !stepper) return;
-
-  function goToAssessment(){
-    // Only run if user has typed something
-    if(!nameInput || !nameInput.value.trim()) return;
-    // Smooth center the assessment start, then focus the first radio without moving scroll
-    assessment.scrollIntoView({behavior:'smooth', block:'start'});
-    setTimeout(()=>{
-      const firstRadio = stepper.querySelector('.step.active input[type="radio"]') || stepper.querySelector('input[type="radio"]');
-      if(firstRadio) firstRadio.focus({preventScroll:true});
-    }, 220);
-  }
-
-  if(goBtn){
-    goBtn.addEventListener('click', (e)=>{
-      e.preventDefault();
-      goToAssessment();
-    });
-  }
-
-  if(nameInput){
-    // Allow Enter to continue (but do NOT auto-jump on blur)
-    nameInput.addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter'){
-        e.preventDefault();
-        goToAssessment();
-      }
-    });
-  }
-
-  // Keep the rest: viewport stabilizer during step changes on small screens
-  const vv = window.visualViewport;
-  let lockY = null;
-  function lockScroll(){ lockY = window.scrollY; }
-  function restoreScroll(){
-    if(lockY !== null){
-      requestAnimationFrame(()=> requestAnimationFrame(()=>{
-        window.scrollTo({top: lockY, behavior: 'instant'});
-        lockY = null;
-      }));
-    }
-  }
-  const isSmall = () => window.matchMedia('(max-width: 520px)').matches;
-
-  document.addEventListener('click', (e)=>{
-    if(!isSmall()) return;
-    if(e.target.closest('.option') || e.target.closest('[data-next],[data-prev]')){
-      lockScroll();
-      setTimeout(restoreScroll, 320);
-    }
-  }, {capture:true});
-
-  stepper.addEventListener('change', (e)=>{
-    if(!isSmall()) return;
-    if(e.target.matches('input[type="radio"]')){
-      lockScroll();
-      setTimeout(restoreScroll, 360);
-    }
-  });
-
-  if(vv){
-    vv.addEventListener('resize', ()=>{
-      if(!isSmall()) return;
-      // Do not force-anchoring on resize; let the user decide while typing
-      // Only adjust if the assessment is already in view but got nudged off markedly
-      const rect = assessment.getBoundingClientRect();
-      if(rect.top < -40){ assessment.scrollIntoView({behavior:'instant', block:'start'}); }
-    });
-  }
-})();
-
 </script>
 </body>
 </html>
