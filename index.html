@@ -2686,17 +2686,23 @@ document.addEventListener('DOMContentLoaded', function(){
   const displayName = document.getElementById('displayName');
 
   function showWelcome(opts = {}) {
-  const { scroll = false } = opts;
-  const safeName = (nameInput.value || '').trim() || 'Estimado/a participante';
-  displayName.textContent = safeName;
-  if (welcome) {
-    welcome.style.display = 'block';
-    if (scroll) { welcome.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    const { scroll = false } = opts;
+    const safeName = (nameInput && nameInput.value ? nameInput.value.trim() : '') || 'Estimado/a participante';
+    if (displayName) {
+      displayName.textContent = safeName;
+    }
+    if (welcome) {
+      welcome.style.display = 'block';
+      if (scroll) {
+        welcome.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+    ensureGoToQ1Button();
   }
-  ensureGoToQ1Button();
-}
 
-  nameInput.addEventListener('input', () => showWelcome({scroll:false}));
+  if (nameInput) {
+    nameInput.addEventListener('input', () => showWelcome({ scroll: false }));
+  }
 
   function ensureGoToQ1Button() {
     let goBtn = document.getElementById('goToQ1');
