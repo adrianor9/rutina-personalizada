@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programa Personalizado de Ejercicio para Adultos Mayores - Adrián Galván</title>
+    <title>Programa Personalizado de Ejercicio para Adultos Mayores - M.C. Adrián G.</title>
     <style>
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -2619,53 +2619,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </script>
 
-// ===== Ajuste: ir primero a #welcomeMessage tras escribir el nombre =====
-(function(){
-  const nextBtn = document.getElementById('nextToQ1');
-  const welcome = document.getElementById('welcomeMessage');
-  const displayName = document.getElementById('displayName');
-  const nameInput = document.getElementById('userName');
 
-  function scrollCenter(el){
-    if (!el) return;
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  if(nextBtn){
-    nextBtn.addEventListener('click', function(evt){
-      // Mostrar el bloque de bienvenida y personalizar nombre
-      if (welcome){
-        welcome.style.display = 'block';
-        if (displayName && nameInput){
-          displayName.textContent = nameInput.value.trim() || 'Amigo/a';
-        }
-        // Crear CTA "Continuar a la Pregunta 1" si no existe
-        let goBtn = document.getElementById('goToQ1');
-        if(!goBtn){
-          goBtn = document.createElement('button');
-          goBtn.id = 'goToQ1';
-          goBtn.type = 'button';
-          goBtn.className = 'secondary-btn';
-          goBtn.textContent = 'Continuar a la Pregunta 1 ➜';
-          goBtn.style.display = 'block';
-          goBtn.style.margin = '14px auto 0 auto';
-          welcome.appendChild(goBtn);
-          goBtn.addEventListener('click', function(){
-            const q1 = document.getElementById('q1');
-            scrollCenter(q1);
-            const firstRadio = q1 ? q1.querySelector('input[type="radio"]') : null;
-            if (firstRadio) { firstRadio.focus({ preventScroll: true }); }
-          });
-        }
-        // Desplazar al centro del bloque de bienvenida
-        scrollCenter(welcome);
-        // Evitar que el handler original haga salto directo a Q1
-        evt.stopImmediatePropagation && evt.stopImmediatePropagation();
-      }
-    }, true);
-  }
-})();
-// ===== Fin ajuste bienvenida =====
 
 
 <!-- ===== Patch: robust Next → Welcome (desktop + mobile) & allow empty name ===== -->
@@ -2724,6 +2678,49 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 <!-- ===== End Patch ===== -->
+
+
+<script>
+  const nameInput = document.getElementById('userName');
+  const welcome   = document.getElementById('welcomeMessage');
+  const displayName = document.getElementById('displayName');
+
+  function showWelcome() {
+    const safeName = (nameInput.value || '').trim() || 'Estimado/a participante';
+    displayName.textContent = safeName;
+    if (welcome) {
+      welcome.style.display = 'block';
+      welcome.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    ensureGoToQ1Button();
+  }
+
+  nameInput.addEventListener('input', showWelcome);
+
+  function ensureGoToQ1Button() {
+    let goBtn = document.getElementById('goToQ1');
+    if (!goBtn && welcome) {
+      goBtn = document.createElement('button');
+      goBtn.id = 'goToQ1';
+      goBtn.type = 'button';
+      goBtn.className = 'secondary-btn';
+      goBtn.textContent = 'Continuar a la Pregunta 1';
+      welcome.appendChild(goBtn);
+      goBtn.addEventListener('click', () => {
+        const q1 = document.querySelector('.question');
+        if (q1) q1.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+  }
+
+  const nextBtn = document.getElementById('nextToQ1');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showWelcome();
+    });
+  }
+</script>
 
 </body>
 </html>
