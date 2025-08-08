@@ -1199,6 +1199,74 @@ body.large-text .step .step-number{
   outline-offset: 4px;
 }
 
+
+/* ===== UX Final Polish for Seniors (v16.2) ===== */
+:root{
+  --ease-soft: cubic-bezier(.22,.61,.36,1);
+  --dur-fast: 120ms;
+  --dur-med: 220ms;
+  --ring: 0 0 0 3px rgba(79,70,229,.18);
+}
+* { -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+
+/* Global type rhythm for readability */
+body, .card p, .card li { line-height: 1.7; }
+.card p + p { margin-top: .6rem; }
+
+/* Buttons: larger hit area & soft transitions */
+button, .secondary-btn, .btn, .control-btn {
+  transition: transform var(--dur-fast) var(--ease-soft),
+              box-shadow var(--dur-med) var(--ease-soft),
+              background-color var(--dur-med) var(--ease-soft),
+              color var(--dur-med) var(--ease-soft);
+  touch-action: manipulation;
+  user-select: none;
+}
+button:focus-visible, .secondary-btn:focus-visible, .btn:focus-visible, .control-btn:focus-visible{
+  outline: none;
+  box-shadow: var(--ring), 0 8px 22px rgba(0,0,0,.15);
+}
+button:active, .secondary-btn:active, .btn:active, .control-btn:active{
+  transform: translateY(1px) scale(.99);
+}
+
+/* Cards: gentle hover (desktop) */
+@media (min-width: 721px){
+  .card, .exercise-card{
+    transition: box-shadow var(--dur-med) var(--ease-soft), transform var(--dur-med) var(--ease-soft);
+  }
+  .card:hover, .exercise-card:hover{ transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,0,0,.12); }
+}
+
+/* Inputs: smooth focus */
+input[type="text"].name-input{
+  transition: border-color var(--dur-med) var(--ease-soft), box-shadow var(--dur-med) var(--ease-soft), background-color var(--dur-med) var(--ease-soft);
+}
+input[type="text"].name-input:focus{ background-color:#fff; }
+
+/* Progress bar shimmer softer */
+.progress-fill::after{ animation-duration: 3s; opacity: .5; }
+
+/* Traffic lights: soften hover & add subtle pulse on tap */
+.traffic-lights .light{
+  transition: transform var(--dur-med) var(--ease-soft), outline-color var(--dur-fast) var(--ease-soft);
+}
+.traffic-lights .light:active{ transform: scale(.97); }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{ transition: none !important; animation: none !important; }
+  html{ scroll-behavior: auto; }
+}
+
+/* Mobile spacing refinements */
+@media (max-width: 520px){
+  .card{ padding-bottom: 18px; }
+  .secondary-btn, .btn{ border-radius: 12px; }
+  .name-input-section p{ margin-bottom: 10px; }
+}
+
 </style>
 </head>
 <body>
@@ -2441,6 +2509,28 @@ body.large-text .step .step-number{
       }
     });
   };
+})();
+
+// Smoothly reveal results and keep context
+(function(){
+  const btn = document.querySelector('.card#assessment .btn');
+  if(btn){
+    const orig = window.generateProgram;
+    window.generateProgram = function(){
+      const prev = document.getElementById('results');
+      if (typeof orig === 'function') orig();
+      requestAnimationFrame(()=>{
+        const target = document.getElementById('results');
+        if(target && target !== prev){
+          target.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      });
+    };
+  }
+  // restart helper
+  if(typeof window.restart !== 'function'){
+    window.restart = function(){ location.reload(); };
+  }
 })();
 </script>
 
