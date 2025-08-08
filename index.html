@@ -902,71 +902,94 @@
             }
         }
     
-/* === Mobile & Large Text Polishing === */
-:root { --stepNum: 36px; }
-
-/* Numbers inside steps */
-.step-number{
-  width: var(--stepNum);
-  height: var(--stepNum);
-  min-width: var(--stepNum);
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
+/* ====== Mobile polish & Large Text friendliness ====== */
+:root{
+  --card-pad: 20px;
+  --step-gap: 12px;
 }
-
-/* Make step layout grid so text doesn't get pushed oddly */
-.step{
-  display: grid;
-  grid-template-columns: var(--stepNum) 1fr;
-  gap: 12px;
-  align-items: start;
-}
-
-/* Improve text flow on small screens */
-.step > div{
-  line-height: 1.55;
-  overflow-wrap: anywhere;
-  hyphens: auto;
-}
-
-/* More comfortable paddings on small screens */
 @media (max-width: 480px){
-  .exercise-card{ padding: 16px; }
-  .step{ padding: 12px; border-radius: 12px; }
-  .step-number{ font-size: 16px; }
-  .exercise-image{ max-width: 160px; }
+  .container{ padding: 12px; }
+  .exercise-card{ padding: 16px; border-radius: 14px; box-shadow: 0 4px 10px rgba(0,0,0,.05); }
+  .exercise-header h4{ font-size: clamp(1.10rem, 2.5vw + .7rem, 1.35rem); }
+  .exercise-description{ font-size: 1rem; }
+  .exercise-image{ max-width: 160px; padding: 6px; }
+  .benefit-tag{ font-size: .95rem; }
+  /* Step blocks: align number badge and text nicely */
+  .exercise-details .step-by-step .step{
+    display: flex; align-items: flex-start; gap: var(--step-gap);
+    padding: 12px 14px; border-radius: 12px; line-height: 1.45;
+    word-break: normal; overflow-wrap: anywhere; hyphens: auto; text-wrap: pretty;
+  }
+  /* Try to catch the number badge whatever its class */
+  .exercise-details .step-by-step .step > .step-number,
+  .exercise-details .step-by-step .step > .number,
+  .exercise-details .step-by-step .step > .badge,
+  .exercise-details .step-by-step .step > :first-child:where(span,div){
+    flex: 0 0 auto; min-width: 32px; min-height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 9999px; font-weight: 700; margin-top: 2px;
+  }
+  /* Make bold labels inline but not force huge line breaks */
+  .exercise-details .step-by-step .step strong{
+    display: inline;
+  }
+  /* Reduce excessive shadows on nested cards */
+  .step-by-step, .exercise-details{ box-shadow: none; }
+  /* Avoid overlap with floating controls; push them to bottom-right on phones */
+  .controls{ position: fixed; right: 10px; bottom: 12px; top: auto; gap: 8px; z-index: 1000; }
+  .control-btn{ padding: 10px 12px; font-size: .95rem; box-shadow: 0 6px 14px rgba(0,0,0,.15); }
+  /* Chips wrap better */
+  .benefit-container, .tags, .chips{ display: flex; flex-wrap: wrap; gap: 8px; }
+  .benefit-tag{ margin: 0; }
+  /* So lines don't look too long in Large Text */
+  .exercise-card > *{ max-width: 100%; }
 }
-
-/* Super small screens */
-@media (max-width: 360px){
-  :root{ --stepNum: 32px; }
-  .exercise-image{ max-width: 140px; }
+/* Large text mode refinements */
+body.large-text .exercise-details .step-by-step .step{
+  font-size: clamp(1.05rem, 2.2vw + .6rem, 1.25rem);
+  line-height: 1.5;
 }
+body.large-text .exercise-image{ max-width: 180px; }
 
-/* When user activates big text mode (if body gets .large-text) */
-body.large-text{
-  --stepNum: 40px;
+
+/* ===== Polished Mobile UX v14 ===== */
+@media (max-width: 480px){
+  /* Better wrapping for Spanish — avoid cortes tipo li-nea */
+  .exercise-details .step-by-step .step{
+    hyphens: none;
+    word-break: normal;
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
+  }
 }
-body.large-text .step-number{ font-size: 18px; }
-body.large-text .step > div{ line-height: 1.6; }
-
-/* Floating controls: keep clear of notches/status bars */
+/* Floating controls: compact + auto-hide + collapsible */
 .controls{
-  position: fixed;
-  top: calc(env(safe-area-inset-top, 0px) + 12px);
-  right: calc(env(safe-area-inset-right, 0px) + 12px);
-  z-index: 1000;
+  position: fixed; right: 14px; bottom: 16px; top: auto;
+  display: flex; flex-direction: column; gap: 10px; z-index: 1000;
+  transition: opacity .25s ease, transform .25s ease;
 }
-.control-btn{ box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+.controls.is-hidden{ opacity:.15; transform: translateY(10px); pointer-events:auto; }
+.controls:hover, .controls:focus-within{ opacity:1; transform:none; }
+.control-btn{ border-radius: 9999px; padding: 10px 12px; }
+.controls .fab{
+  width: 48px; height: 48px; border-radius: 9999px; display: inline-flex;
+  align-items: center; justify-content: center; font-size: 22px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.2); background:#6b7bff; color:#fff; border:none;
+}
+.controls.collapsed .control-btn{ display:none; }
+.controls.collapsed .fab{ display:flex; }
+@media (min-width: 481px){
+  .controls{ bottom: 24px; right: 24px; }
+}
 
 </style>
 </head>
 <body>
     <div class="container">
         <!-- CONTROLES FLOTANTES -->
-        <div class="controls">
+        <div class="controls collapsed" id="controls">
+  <button class="fab" id="fabToggle" aria-label="Más opciones">⋮</button>
+
             <button class="control-btn" onclick="toggleLargeText()">🔍 Letra Grande</button>
             <button class="control-btn" onclick="shareWithFamily()">📱 Compartir</button>
         </div>
@@ -1340,7 +1363,6 @@ body.large-text .step > div{ line-height: 1.6; }
 
         // FUNCIONES DE CONTROL
         function toggleLargeText() {
-  try{ document.body.classList.toggle('large-text'); }catch(e){}
             isLargeText = !isLargeText;
             if (isLargeText) {
                 document.body.classList.add('large-text');
@@ -2098,6 +2120,50 @@ body.large-text .step > div{ line-height: 1.6; }
 })();
 </script>
     
+
+
+<script>
+(function(){
+  const ctr = document.getElementById('controls');
+  const fab = document.getElementById('fabToggle');
+  if (!ctr || !fab) return;
+
+  function expand(){ ctr.classList.remove('collapsed'); ctr.classList.remove('is-hidden'); }
+  function collapse(){ ctr.classList.add('collapsed'); }
+  fab.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if (ctr.classList.contains('collapsed')) expand(); else collapse();
+  });
+  // Hide controls after inactivity
+  let hideTimer;
+  function scheduleHide(){
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(()=> ctr.classList.add('is-hidden'), 1800);
+  }
+  function showNow(){
+    ctr.classList.remove('is-hidden');
+    scheduleHide();
+  }
+  // Scroll behavior: show on scroll up, hide after a bit
+  let lastY = window.scrollY;
+  window.addEventListener('scroll', ()=>{
+    const y = window.scrollY;
+    if (y < lastY - 5) { // scrolling up
+      ctr.classList.remove('is-hidden');
+    } else if (y > lastY + 5) { // scrolling down
+      scheduleHide();
+    }
+    lastY = y;
+  }, {passive:true});
+  // Show on touch/move
+  ['touchstart','mousemove','keydown'].forEach(evt=>{
+    window.addEventListener(evt, showNow, {passive:true});
+  });
+  // Start collapsed and schedule hide
+  collapse();
+  scheduleHide();
+})();
+</script>
 
 </body>
 </html>
