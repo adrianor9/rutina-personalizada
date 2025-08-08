@@ -1057,6 +1057,77 @@ body.large-text .step .step-number{
   box-shadow: 0 8px 18px rgba(0,0,0,.2); z-index: 999;
 }
 
+
+/* ===== v16.1 Mobile: full width + centered headings (readable) ===== */
+@media (max-width: 520px){
+  html, body{
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important; /* sin marco de color */
+  }
+  .container{
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  /* Tarjetas a todo lo ancho, con padding interno cómodo */
+  .card,
+  .welcome-section,
+  .scientific-credentials,
+  .name-input-section,
+  .question,
+  .daily-schedule,
+  .timer-section,
+  .safety-light,
+  .checklist,
+  .youtube-section,
+  .exercise-card,
+  .personalized-tips,
+  .expected-results,
+  .scientific-evidence,
+  .safety-warning {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 14px !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Encabezados centrados, texto normal legible a la izquierda */
+  .card h1, .card h2, .card h3,
+  .welcome-section h3,
+  .exercise-card h4 {
+    text-align: center !important;
+  }
+  .card p, .card li,
+  .welcome-section p,
+  .exercise-card p,
+  .exercise-card li,
+  .personalized-tips p, .personalized-tips li {
+    text-align: left !important;
+    line-height: 1.6 !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* Input y botones a 100% para que no queden estrechos */
+  input[type="text"].name-input,
+  .secondary-btn, .btn, .control-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Evitar que el FAB tape contenido en móviles */
+  .controls{
+    bottom: 16px !important;
+    right: 12px !important;
+    top: auto !important;
+  }
+}
+
 </style>
 </head>
 <body>
