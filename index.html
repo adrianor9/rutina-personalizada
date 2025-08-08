@@ -1058,45 +1058,7 @@ body.large-text .step .step-number{
 }
 
 
-/* ===== Accessibility color system (light + dark) ===== */
-:root{
-  --bg: #ffffff;
-  --ink: #0f172a;            /* dark slate text */
-  --muted: #334155;
-  --card: #ffffff;
-  --chip: #e8edff;
-  --chip-ink: #3043a2;
 
-  /* tips / warnings (light) */
-  --tip-bg: #dff7e9;         /* higher contrast green */
-  --tip-ink: #0b3d2e;
-  --tip-border: #1ea87a;
-
-  --warn-bg: #fff3cd;
-  --warn-ink: #5c3a00;
-  --warn-border: #f59e0b;
-
-  --info-bg: #e6f4ff;
-  --info-ink: #0b2a4a;
-  --info-border: #3b82f6;
-
-  --rail: transparent;       /* remove purple rail on mobile later */
-}
-
-/* Dark mode defaults (auto) */
-}
-/* Manual dark mode toggle overrides the media query */
-body.dark-mode{
-  --bg: #0b0f1a;
-  --ink: #e6eaf2;
-  --muted: #c7d2fe;
-  --card: #0f1625;
-  --chip: #1f2b4d;
-  --chip-ink: #c7d2fe;
-  --tip-bg: #0e2a22; --tip-ink: #ccf0e1; --tip-border: #2dd4bf;
-  --warn-bg: #2c2413; --warn-ink: #ffefc1; --warn-border: #fbbf24;
-  --info-bg: #0e2037; --info-ink: #cfe7ff; --info-border: #60a5fa;
-}
 
 
 /* Use variables */
@@ -1134,50 +1096,30 @@ h1,h2,h3,h4,h5,h6{ color: var(--ink); }
 }
 .info-card{ background: var(--card); color: var(--ink); }
 
-
-/* Controls layout clean-up */
-.controls{ position: fixed; right: 24px; bottom: 24px; display:flex; flex-direction:column; gap:10px; z-index: 1000; }
-.controls.collapsed .control-btn{ display:none; }
-.controls .fab{ width: 52px; height: 52px; border-radius: 9999px; display:inline-flex; align-items:center; justify-content:center; font-size:22px; box-shadow: 0 8px 18px rgba(0,0,0,.2); background:#6b7bff; color:#fff; border:none; }
-.controls .control-btn{ border-radius: 9999px; padding: 10px 14px; background:#6372ff; color:#fff; border:none; box-shadow: 0 6px 14px rgba(0,0,0,.15); }
-.controls.is-hidden{ opacity:.25; transform: translateY(6px); transition: opacity .2s, transform .2s; }
-
-
-/* ===== v18 Mobile spacing & clipping fixes ===== */
-@media (max-width: 520px){
-  html, body{ padding: 0 !important; margin: 0 !important; background: var(--bg) !important; }
-  .container{ max-width: 100% !important; padding: 0 12px !important; margin: 0 auto !important; }
-  .card{ margin: 0 0 16px 0 !important; border-radius: 16px !important; }
-  .scientific-credentials, .welcome-section, .name-input-section,
-  .question, .daily-schedule, .timer-section, .checklist,
-  .personalized-tips, .safety-warning, .safety-light, .exercise-card{
-    margin-left: 0 !important; margin-right: 0 !important;
-  }
-  h1{ font-size: clamp(1.75rem, 4.5vw + 1rem, 2.2rem) !important; }
-  h2{ font-size: clamp(1.4rem, 3.8vw + 0.9rem, 1.9rem) !important; }
-  h3{ font-size: clamp(1.1rem, 3.4vw + 0.8rem, 1.35rem) !important; }
-  /* Better wrapping for large buttons and headings */
-  .btn{ white-space: normal !important; }
-  .subtitle, p, li, .option label{
-    overflow-wrap: anywhere; word-break: normal; hyphens: auto;
-  }
-  /* Floating controls safe zone */
-  .controls{ right: 10px !important; bottom: 14px !important; top: auto !important; }
-}
-
-/* Ensure the page never shows the old purple gradient frame */
-body{ background: var(--bg) !important; }
-
 </style>
-</head>
+<style>
+@media (max-width: 768px) {
+    body, .container, .card, .section, .content {
+        margin: 0 !important;
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .card {
+        border-radius: 0 !important;
+    }
+}
+</style></head>
 <body>
     <div class="container">
         <!-- CONTROLES FLOTANTES -->
         <div class="controls collapsed" id="controls">
-  <button class="control-btn" id="toggleDark">🌙 Modo oscuro</button><button class="control-btn" onclick="toggleLargeText()">🔍 Letra Grande</button>
+  <button class="fab" id="fabToggle" aria-label="Más opciones">⋮</button>
+
+            <button class="control-btn" onclick="toggleLargeText()">🔍 Letra Grande</button>
             <button class="control-btn" onclick="shareWithFamily()">📱 Compartir</button>
-          <button class="fab" id="fabToggle" aria-label="Más opciones">⋮</button>
-</div>
+        </div>
         
         <!-- HEADER MEJORADO -->
         <div class="card">
@@ -2307,98 +2249,80 @@ body{ background: var(--bg) !important; }
     
 
 
-<button id="toTop" aria-label="Volver arriba">↑</button>
-
-
 <script>
 (function(){
   const ctr = document.getElementById('controls');
-  if (!ctr) return;
-  // Ensure base classes
-  ctr.classList.add('collapsed');
-  // Add behavior to FAB
-  let fab = document.getElementById('fabToggle');
-  if (!fab){
-    fab = document.createElement('button');
-    fab.className = 'fab';
-    fab.id = 'fabToggle';
-    fab.setAttribute('aria-label','Más opciones');
-    fab.textContent = '⋮';
-    ctr.appendChild(fab);
-  }
+  const fab = document.getElementById('fabToggle');
+  if (!ctr || !fab) return;
+
   function expand(){ ctr.classList.remove('collapsed'); ctr.classList.remove('is-hidden'); }
   function collapse(){ ctr.classList.add('collapsed'); }
-  fab.onclick = function(e){ e.stopPropagation(); ctr.classList.contains('collapsed') ? expand() : collapse(); };
-
-  // Dark mode toggle
-  const key = 'prefers-dark-mode-manual';
-  const btnDark = document.getElementById('toggleDark');
-  function updateLabel(){
-    if (!btnDark) return;
-    btnDark.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo claro' : '🌙 Modo oscuro';
-  }
-  if (btnDark){
-    const saved = localStorage.getItem(key);
-    if (saved === '1') document.body.classList.add('dark-mode');
-    updateLabel();
-    btnDark.addEventListener('click', function(){
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem(key, document.body.classList.contains('dark-mode') ? '1' : '0');
-      updateLabel();
-    });
-  }
-
-  // Auto-hide behavior (desktop too)
+  fab.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if (ctr.classList.contains('collapsed')) expand(); else collapse();
+  });
+  // Hide controls after inactivity
   let hideTimer;
   function scheduleHide(){
     clearTimeout(hideTimer);
-    hideTimer = setTimeout(()=> ctr.classList.add('is-hidden'), 2000);
+    hideTimer = setTimeout(()=> ctr.classList.add('is-hidden'), 1800);
   }
   function showNow(){
     ctr.classList.remove('is-hidden');
     scheduleHide();
   }
-  window.addEventListener('mousemove', showNow, {passive:true});
-  window.addEventListener('scroll', scheduleHide, {passive:true});
+  // Scroll behavior: show on scroll up, hide after a bit
+  let lastY = window.scrollY;
+  window.addEventListener('scroll', ()=>{
+    const y = window.scrollY;
+    if (y < lastY - 5) { // scrolling up
+      ctr.classList.remove('is-hidden');
+    } else if (y > lastY + 5) { // scrolling down
+      scheduleHide();
+    }
+    lastY = y;
+  }, {passive:true});
+  // Show on touch/move
+  ['touchstart','mousemove','keydown'].forEach(evt=>{
+    window.addEventListener(evt, showNow, {passive:true});
+  });
+  // Start collapsed and schedule hide
+  collapse();
   scheduleHide();
 })();
+</script>
 
+<button id="toTop" aria-label="Volver arriba">↑</button>
 
-// ===== Theme (light/dark) handling with persistence =====
-const DARK_CLASS = 'dark-mode';
-const darkBtn = document.getElementById('toggleDark');
-
-function setDark(enabled){
-    document.body.classList.toggle(DARK_CLASS, !!enabled);
-    try{ localStorage.setItem('am_theme', enabled ? 'dark' : 'light'); }catch(e){}
-    if(darkBtn){
-        darkBtn.textContent = document.body.classList.contains(DARK_CLASS) ? '☀️ Modo claro' : '🌙 Modo oscuro';
-    }
-}
-
-// Initialize on load: prefer saved; else system preference
-(function initTheme(){
-    let saved = null;
-    try{ saved = localStorage.getItem('am_theme'); }catch(e){ saved = null; }
-    if(saved === 'dark'){ setDark(true); }
-    else if(saved === 'light'){ setDark(false); }
-    else{
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setDark(prefersDark);
-    }
+<script>
+(function(){
+  const toTop = document.getElementById('toTop');
+  const showY = 400;
+  window.addEventListener('scroll', ()=>{
+    if (window.scrollY > showY) { toTop.style.display = 'block'; }
+    else { toTop.style.display = 'none'; }
+  }, {passive:true});
+  toTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
 })();
+</script>
 
-if(darkBtn){
-    darkBtn.addEventListener('click', () => setDark(!document.body.classList.contains(DARK_CLASS)));
-}
-// Update label if system preference changes and no explicit choice was saved
-try{
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    media.addEventListener?.('change', (e) => {
-        const saved = localStorage.getItem('am_theme');
-        if(!saved){ setDark(e.matches); }
-    });
-}catch(e){}
+
+<script>
+(function(){
+  const key = 'prefers-dark-mode-manual';
+  const btn = document.getElementById('toggleDark');
+  if (!btn) return;
+  // Load preference
+  const saved = localStorage.getItem(key);
+  if (saved === '1') document.body.classList.add('dark-mode');
+  const updateLabel = () => btn.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo claro' : '🌙 Modo oscuro';
+  updateLabel();
+  btn.addEventListener('click', ()=>{
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem(key, document.body.classList.contains('dark-mode') ? '1' : '0');
+    updateLabel();
+  });
+})();
 </script>
 
 </body>
