@@ -1280,6 +1280,72 @@ input[type="text"].name-input:focus{ background-color:#fff; }
 .step-counter { font-weight:700; font-size:1rem; opacity:.7; text-align:center; margin:10px 0 0; }
 /* Móvil: un poco más bajo */
 @media (max-width: 520px){ #assessment{ min-height: 520px; } }
+
+/* ===== Wizard dots + smoother transitions ===== */
+:root{
+  --wizard-ease: cubic-bezier(.22,.61,.36,1);
+  --wizard-dur: 260ms;
+}
+
+/* Transition model: crossfade + gentle translate, no layout jump because #assessment has min-height */
+.step{
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--wizard-dur) var(--wizard-ease),
+              transform var(--wizard-dur) var(--wizard-ease);
+  pointer-events: none;
+}
+.step.active{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Optional: a tiny fade-out when leaving */
+.step.leaving{
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* Dots indicator */
+.step-dots{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.step-dots .dot{
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  border: 0;
+  background: #cbd5e1; /* slate-300 */
+  cursor: pointer;
+  transition: transform 140ms var(--wizard-ease), background-color 180ms var(--wizard-ease);
+}
+.step-dots .dot:focus-visible{ outline: none; box-shadow: 0 0 0 3px rgba(79,70,229,.2); }
+.step-dots .dot:hover{ transform: scale(1.15); }
+.step-dots .dot.active{ background: #6366f1; } /* indigo-500 */
+.step-dots .dot.completed{ background: #22c55e; } /* green-500 for pasos ya contestados */
+
+@media (max-width: 520px){
+  .step-dots{ gap: 10px; }
+  .step-dots .dot{ width: 11px; height: 11px; }
+}
+
+
+/* ===== Mobile flow stability ===== */
+@media (max-width: 520px){
+  /* Keep a consistent anchor area so el contenedor no "salta" */
+  #assessment{
+    scroll-margin-top: 12px;
+    min-height: 520px; /* ya existía, reforzamos */
+  }
+  /* Radios y opciones: evitar que ganar/ perder enfoque provoque reflujo raro */
+  .option input{ touch-action: manipulation; }
+  .option{ will-change: transform; }
+}
+
 </style>
 </head>
 <body>
@@ -1338,7 +1404,8 @@ input[type="text"].name-input:focus{ background-color:#fff; }
 </div>
 </div>
 <!-- PREGUNTA 1 MEJORADA -->
-<div class="stepper" id="stepper"><section class="step active" data-step="1"><div class="question">
+<div class="stepper" id="stepper">
+  <div class="step-dots" id="stepDots" aria-label="Progreso"></div><section class="step active" data-step="1"><div class="question">
 <h3>1. ¿Cómo describirías tu nivel actual de actividad física?</h3>
 <p style="color: #666; margin-bottom: 15px;">Esta información nos ayuda a ajustar la intensidad de tus ejercicios</p>
 <label class="option">
@@ -2550,6 +2617,209 @@ input[type="text"].name-input:focus{ background-color:#fff; }
   window.__wizardShowStep = showStep;
   // Inicia
   showStep(0, false);
+})();
+
+// ===== Wizard: dots, keyboard navigation, smoother transitions =====
+(function(){
+  const stepper = document.getElementById('stepper');
+  if(!stepper) return;
+  const steps = Array.from(stepper.querySelectorAll('.step'));
+  const dotsBox = document.getElementById('stepDots');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+  let current = steps.findIndex(s => s.classList.contains('active'));
+  if(current < 0) current = 0;
+
+  // Build dots
+  dotsBox.innerHTML = '';
+  steps.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.className = 'dot' + (i===current ? ' active' : '');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Ir al paso ' + (i+1));
+    b.dataset.goto = String(i);
+    dotsBox.appendChild(b);
+  });
+
+  function updateDots(){
+    const answeredUpTo = getAnsweredCount();
+    dotsBox.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+      d.classList.toggle('completed', i < answeredUpTo);
+    });
+  }
+
+  function getAnsweredCount(){
+    // Count steps with a checked radio inside (simple heuristic)
+    let count = 0;
+    steps.forEach(s => { if(s.querySelector('input[type="radio"]:checked')) count++; });
+    return count;
+  }
+
+  function animateSwitch(prev, next){
+    if(prev === next) return;
+    // leave prev gracefully
+    prev.classList.add('leaving');
+    next.classList.add('active'); // will fade in
+    // after transition, clean prev
+    setTimeout(() => { prev.classList.remove('leaving'); prev.classList.remove('active'); }, 280);
+  }
+
+  function showStep(i, focusFirst=true){
+    i = Math.max(0, Math.min(i, steps.length-1));
+    const prev = steps[current];
+    const next = steps[i];
+    if(prev !== next){
+      animateSwitch(prev, next);
+      current = i;
+    }
+    const pct = ((current+1)/steps.length)*100;
+    if(progressFill) progressFill.style.width = pct + '%';
+    if(progressText) progressText.textContent = 'Progreso: ' + (current+1) + ' de ' + steps.length + ' preguntas completadas';
+    updateDots();
+    if (focusFirst) {
+      const firstRadio = next.querySelector('input[type="radio"]');
+      if (firstRadio) firstRadio.focus({preventScroll:true});
+    }
+  }
+
+  // Click dots
+  dotsBox.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.dot');
+    if(!btn) return;
+    const to = parseInt(btn.dataset.goto || '0', 10);
+    showStep(to);
+  });
+
+  // Delegation: nav buttons
+  stepper.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    if (btn.hasAttribute('data-next')) showStep(current+1);
+    if (btn.hasAttribute('data-prev')) showStep(current-1);
+  });
+
+  // Auto-advance on answer
+  stepper.addEventListener('change', (e)=>{
+    if (e.target.matches('input[type="radio"]')) {
+      setTimeout(()=> { if (current < steps.length-1) showStep(current+1); updateDots(); }, 260);
+    }
+  });
+
+  // Keyboard navigation inside current step
+  stepper.addEventListener('keydown', (e)=>{
+    const radios = Array.from(steps[current].querySelectorAll('input[type="radio"]'));
+    if(radios.length === 0) return;
+    const checkedIndex = radios.findIndex(r => r.checked);
+    if(e.key === 'ArrowDown' || e.key === 'ArrowRight'){
+      e.preventDefault();
+      const next = radios[Math.min(radios.length-1, Math.max(0, checkedIndex + 1))] || radios[0];
+      next.checked = true; next.focus({preventScroll:true});
+      stepper.dispatchEvent(new Event('change', {bubbles:true}));
+    }else if(e.key === 'ArrowUp' || e.key === 'ArrowLeft'){
+      e.preventDefault();
+      const prev = radios[Math.max(0, (checkedIndex === -1 ? radios.length-1 : checkedIndex - 1))];
+      prev.checked = true; prev.focus({preventScroll:true});
+      stepper.dispatchEvent(new Event('change', {bubbles:true}));
+    }else if(e.key === 'Enter'){
+      e.preventDefault();
+      if (current < steps.length-1) showStep(current+1);
+      else {
+        const finalBtn = document.getElementById('finalBtn') || stepper.querySelector('.btn[onclick*="generateProgram"]');
+        if(finalBtn) finalBtn.click();
+      }
+    }
+  });
+
+  // Initial sync
+  updateDots();
+})();
+
+// ===== Mobile flow fixes: jump to assessment after name & stabilize viewport =====
+(function(){
+  const nameInput = document.getElementById('userName');
+  const assessment = document.getElementById('assessment');
+  const stepper = document.getElementById('stepper');
+  if(!assessment || !stepper) return;
+
+  // Helper: smooth scroll to assessment top (with slight delay if keyboard just closed)
+  function goToAssessment(){
+    // Try to wait a tick so iOS keyboard cierre no sacuda el scroll
+    setTimeout(()=>{
+      assessment.scrollIntoView({behavior:'smooth', block:'start'});
+      // focus first option for accesibilidad
+      const firstRadio = stepper.querySelector('.step.active input[type="radio"]') || stepper.querySelector('input[type="radio"]');
+      if(firstRadio){ firstRadio.focus({preventScroll:true}); }
+    }, 120);
+  }
+
+  if(nameInput){
+    // When pressing Enter
+    nameInput.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' && nameInput.value.trim().length > 0){
+        e.preventDefault();
+        goToAssessment();
+      }
+    });
+    // When leaving the field the first time with content
+    let jumped = false;
+    nameInput.addEventListener('blur', ()=>{
+      if(!jumped && nameInput.value.trim().length > 0){
+        jumped = true;
+        goToAssessment();
+      }
+    });
+  }
+
+  // Viewport stabilizer: keep the assessment card anchored while steps change
+  const vv = window.visualViewport;
+  let lockY = null;
+  function lockScroll(){
+    lockY = window.scrollY;
+  }
+  function restoreScroll(){
+    if(lockY !== null){
+      // Use requestAnimationFrame dos veces para esperar al reflow/paint
+      requestAnimationFrame(()=> requestAnimationFrame(()=>{
+        window.scrollTo({top: lockY, behavior: 'instant'});
+        lockY = null;
+      }));
+    }
+  }
+
+  // Pin scroll around step changes & radio taps (only on small screens)
+  const isSmall = () => window.matchMedia('(max-width: 520px)').matches;
+
+  document.addEventListener('click', (e)=>{
+    if(!isSmall()) return;
+    if(e.target.closest('.option') || e.target.closest('[data-next],[data-prev]')){
+      lockScroll();
+      setTimeout(restoreScroll, 320);
+    }
+  }, {capture:true});
+
+  stepper.addEventListener('change', (e)=>{
+    if(!isSmall()) return;
+    if(e.target.matches('input[type="radio"]')){
+      lockScroll();
+      setTimeout(restoreScroll, 360);
+    }
+  });
+
+  // When visualViewport resizes (keyboard), try to keep assessment in place
+  if(vv){
+    let lastHeight = vv.height;
+    vv.addEventListener('resize', ()=>{
+      if(!isSmall()) return;
+      // If keyboard opened/closed, prefer locking to assessment top area
+      const rect = assessment.getBoundingClientRect();
+      // Keep top margin visible
+      if(rect.top < 0 || rect.top > 20){
+        assessment.scrollIntoView({behavior:'instant', block:'start'});
+      }
+      lastHeight = vv.height;
+    });
+  }
 })();
 </script>
 </body>
