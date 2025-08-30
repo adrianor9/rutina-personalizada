@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programa Personalizado de Ejercicio para Adultos Mayores - Dr. Miguel Hernandéz</title>
+    <title>Programa Personalizado de Ejercicio para Adultos Mayores - Adrián Galván</title>
     <style>
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -1582,7 +1582,7 @@ input[type="text"].name-input:focus{ background-color:#fff; }
             <!-- SECCIÓN CANAL DE YOUTUBE -->
             <div class="youtube-section">
                 <h3>🎥 ¿Te gustó esta guía personalizada?</h3>
-                <p style="font-size: 1.2rem;"><strong>¡Hola! Soy el Dr. Miguel Hernández., creador de esta herramienta gratuita.</strong></p>
+                <p style="font-size: 1.2rem;"><strong>¡Hola! Soy Adrián Galván, creador de esta herramienta gratuita.</strong></p>
                 <p style="font-size: 1.1rem;">Si esta guía te ha sido útil, me encantaría que visitaras mi canal de YouTube donde comparto más contenido científico sobre longevidad, salud y bienestar para adultos mayores.</p>
                 <p style="font-size: 1.1rem;"><strong>📺 Canal:</strong> Ciencia Y Enigmas: Secretos de Longevidad</p>
                 <p style="margin: 20px 0;">✨ Suscríbete y descubre más secretos respaldados por la ciencia para vivir mejor y más tiempo ✨</p>
@@ -1661,21 +1661,24 @@ input[type="text"].name-input:focus{ background-color:#fff; }
         }
 
         function shareWithFamily() {
+            var youtubeUrl = 'https://www.youtube.com/watch?v=5tG_OfA_H8Y';
+            var shareMessage = '¡Mira este video que me ayudó a recuperar mi fuerza después de los 60!';
+            
             if (navigator.share) {
                 navigator.share({
-                    title: 'Mi Programa de Ejercicios Personalizado',
-                    text: 'Mira mi programa de ejercicios personalizado para adultos mayores',
-                    url: window.location.href
+                    title: shareMessage,
+                    text: shareMessage,
+                    url: youtubeUrl
                 });
             } else {
                 // Fallback para dispositivos que no soportan Web Share API
-                var shareText = 'Mira mi programa de ejercicios personalizado: ' + window.location.href;
+                var shareText = shareMessage + ' ' + youtubeUrl;
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(shareText).then(function() {
-                        alert('¡Enlace copiado! Ahora puedes pegarlo en WhatsApp, SMS o email para compartirlo con tu familia.');
+                        alert('¡Enlace copiado! Ahora puedes pegarlo en WhatsApp, SMS o email para compartirlo.');
                     });
                 } else {
-                    alert('Para compartir, copia esta dirección: ' + window.location.href);
+                    alert('Para compartir, copia este enlace: ' + youtubeUrl);
                 }
             }
         }
@@ -2685,24 +2688,17 @@ document.addEventListener('DOMContentLoaded', function(){
   const welcome   = document.getElementById('welcomeMessage');
   const displayName = document.getElementById('displayName');
 
-  function showWelcome(opts = {}) {
-    const { scroll = false } = opts;
-    const safeName = (nameInput && nameInput.value ? nameInput.value.trim() : '') || 'Estimado/a participante';
-    if (displayName) {
-      displayName.textContent = safeName;
-    }
+  function showWelcome() {
+    const safeName = (nameInput.value || '').trim() || 'Estimado/a participante';
+    displayName.textContent = safeName;
     if (welcome) {
       welcome.style.display = 'block';
-      if (scroll) {
-        welcome.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      welcome.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     ensureGoToQ1Button();
   }
 
-  if (nameInput) {
-    nameInput.addEventListener('input', () => showWelcome({ scroll: false }));
-  }
+  nameInput.addEventListener('input', showWelcome);
 
   function ensureGoToQ1Button() {
     let goBtn = document.getElementById('goToQ1');
@@ -2724,8 +2720,8 @@ document.addEventListener('DOMContentLoaded', function(){
   if (nextBtn) {
     nextBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      showWelcome({scroll:true});
-});
+      showWelcome();
+    });
   }
 </script>
 
